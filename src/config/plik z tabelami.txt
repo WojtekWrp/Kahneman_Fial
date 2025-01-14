@@ -1,0 +1,160 @@
+CREATE TABLE "sesja" (
+   "id_sesji" int NOT NULL AUTO_INCREMENT,
+   "id_uzytkownika" int NOT NULL,
+   "rozp_sesji" datetime NOT NULL,
+   "koniec_sesji" datetime DEFAULT NULL,
+   PRIMARY KEY ("id_sesji"),
+   KEY "id_uzytkownika" ("id_uzytkownika"),
+   CONSTRAINT "sesja_ibfk_1" FOREIGN KEY ("id_uzytkownika") REFERENCES "uzytkownicy" ("id_uzytkownika") ON DELETE CASCADE ON UPDATE CASCADE
+ )
+CREATE TABLE "socialproof" (
+   "id" int NOT NULL AUTO_INCREMENT,
+   "id_sesji" int NOT NULL,
+   "wersja" enum('tricked','normal') NOT NULL,
+   "czas_odpowiedzi" float NOT NULL,
+   "wynik" tinyint(1) NOT NULL,
+   PRIMARY KEY ("id"),
+   KEY "fk_socialproof_sesja_idx" ("id_sesji"),
+   CONSTRAINT "fk_socialproof_sesja" FOREIGN KEY ("id_sesji") REFERENCES "sesja" ("id_sesji") ON DELETE CASCADE ON UPDATE CASCADE
+ )
+CREATE TABLE "timepressing" (
+   "id" int NOT NULL AUTO_INCREMENT,
+   "id_sesji" int NOT NULL,
+   "wersja" enum('tricked','normal') NOT NULL,
+   "czas_odpowiedzi" float NOT NULL,
+   "wynik" tinyint(1) NOT NULL,
+   PRIMARY KEY ("id"),
+   KEY "id_sesji" ("id_sesji"),
+   CONSTRAINT "timepressing_ibfk_1" FOREIGN KEY ("id_sesji") REFERENCES "sesja" ("id_sesji") ON DELETE CASCADE ON UPDATE CASCADE
+ )
+CREATE TABLE "uzytkownicy" (
+   "id_uzytkownika" int NOT NULL AUTO_INCREMENT,
+   "wiek" int NOT NULL,
+   "plec" enum('mezczyzna','kobieta') NOT NULL,
+   "id_wyksztalcenia" int DEFAULT NULL,
+   "uczelnia" varchar(255) NOT NULL,
+   PRIMARY KEY ("id_uzytkownika"),
+   KEY "id_wyksztalcenia" ("id_wyksztalcenia"),
+   CONSTRAINT "uzytkownicy_ibfk_1" FOREIGN KEY ("id_wyksztalcenia") REFERENCES "wyksztalcenie" ("id_wyksztalcenia") ON DELETE SET NULL ON UPDATE CASCADE
+ )
+
+CREATE TABLE "wyksztalcenie" (
+   "id_wyksztalcenia" int NOT NULL AUTO_INCREMENT,
+   "wyksztalcenie" varchar(255) NOT NULL,
+   PRIMARY KEY ("id_wyksztalcenia")
+ )
+
+
+CREATE TABLE "questions" (
+   "id" int NOT NULL AUTO_INCREMENT,
+   "id_sesji" int NOT NULL,
+   "max_czas" int NOT NULL,
+   "czas_odpowiedzi" float NOT NULL,
+   "wynik" tinyint(1) NOT NULL,
+   PRIMARY KEY ("id"),
+   KEY "fk_questions_sesja_idx" ("id_sesji"),
+   CONSTRAINT "fk_questions_sesja" FOREIGN KEY ("id_sesji") REFERENCES "sesja" ("id_sesji") ON DELETE CASCADE ON UPDATE CASCADE
+ )
+
+CREATE TABLE "preselections" (
+   "id" int NOT NULL AUTO_INCREMENT,
+   "id_sesji" int NOT NULL,
+   "max_czas" int NOT NULL,
+   "czas_odpowiedzi" float NOT NULL,
+   "wynik" tinyint(1) NOT NULL,
+   PRIMARY KEY ("id"),
+   KEY "id_sesji" ("id_sesji"),
+   CONSTRAINT "preselections_ibfk_1" FOREIGN KEY ("id_sesji") REFERENCES "sesja" ("id_sesji") ON DELETE CASCADE ON UPDATE CASCADE
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE "misdirections" (
+   "id" int NOT NULL AUTO_INCREMENT,
+   "id_sesji" int NOT NULL,
+   "max_czas" int NOT NULL,
+   "czas_odpowiedzi" float NOT NULL,
+   "wynik" tinyint(1) NOT NULL,
+   PRIMARY KEY ("id"),
+   KEY "id_sesji" ("id_sesji"),
+   CONSTRAINT "misdirections_ibfk_1" FOREIGN KEY ("id_sesji") REFERENCES "sesja" ("id_sesji") ON DELETE CASCADE ON UPDATE CASCADE
+ )
+
+
+
+
+
+
+
+
+
+CREATE TABLE "kolory" (
+   "id" int NOT NULL AUTO_INCREMENT,
+   "id_sesji" int NOT NULL,
+   "max_czas" int NOT NULL,
+   "czas_odpowiedzi" float NOT NULL,
+   "wynik" tinyint(1) NOT NULL,
+   PRIMARY KEY ("id"),
+   KEY "id_sesji" ("id_sesji"),
+   CONSTRAINT "kolory_ibfk_1" FOREIGN KEY ("id_sesji") REFERENCES "sesja" ("id_sesji") ON DELETE CASCADE ON UPDATE CASCADE
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE "framing" (
+   "id" int NOT NULL AUTO_INCREMENT,
+   "id_sesji" int NOT NULL,
+   "wersja" enum('negative','positive') NOT NULL,
+   "czas_odpowiedzi" float NOT NULL,
+   "wynik" tinyint(1) NOT NULL,
+   PRIMARY KEY ("id"),
+   KEY "id_sesji" ("id_sesji"),
+   CONSTRAINT "framing_ibfk_1" FOREIGN KEY ("id_sesji") REFERENCES "sesja" ("id_sesji") ON DELETE CASCADE ON UPDATE CASCADE
+ )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE "false_hierarchy" (
+   "id" int NOT NULL AUTO_INCREMENT,
+   "id_sesji" int NOT NULL,
+   "max_czas" int NOT NULL,
+   "czas_odpowiedzi" float NOT NULL,
+   "wynik" tinyint(1) NOT NULL,
+   PRIMARY KEY ("id"),
+   KEY "id_sesji" ("id_sesji"),
+   CONSTRAINT "false_hierarchy_ibfk_1" FOREIGN KEY ("id_sesji") REFERENCES "sesja" ("id_sesji") ON DELETE CASCADE ON UPDATE CASCADE
+ )
+
+
+

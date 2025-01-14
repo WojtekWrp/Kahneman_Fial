@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Zadanie 6 - Zakupy</title>
+    <!-- Jeśli używasz Bootstrapa jak w poprzednich zadaniach -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .task-container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .purchase-box {
+            margin: 20px 0;
+        }
+        .purchase-box p {
+            margin-top: 10px;
+            color: #6c757d;
+        }
+        .timer-text {
+            font-weight: bold;
+            color: red;
+            margin-top: 10px;
+        }
+        .submit-btn {
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+
+        .progress {
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background-color: #007bff;
+            width: 0%;
+            height: 100%;
+            transition: width 0.1s linear;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="task-container">
+        <h1>Zakupy</h1>
+    
+        <form action="/task6" method="POST" id="task6-form">
+            <!-- CheckBoxy z cenami -->
+            <div class="purchase-box">
+                <label>
+                    <input type="checkbox" name="ksiazka" value="55" checked>
+                    Książka (55 zł)
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name="zapakowanie" value="5">
+                    Zapakowanie jako prezent (5 zł)
+                </label>
+            </div>
+
+            <!-- Dodatkowy timer wyświetlany, jeśli isTricked === true -->
+            <div id="timer" class="timer-text" style="display: none;">
+                Pozostało 30 sekund na skorzystanie z oferty!
+            </div>
+
+            <button type="submit" class="submit-btn">Przejdź do zakupu</button>
+            <input type="hidden" name="timeout" id="timeout" value="false">
+        </form>
+             <!-- Pasek postępu -->
+             <div class="progress">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+    </div>
+    
+
+
+
+    <script>
+        // Jeśli "wersja tricked" – pokazujemy dodatkowy odliczający timer
+        const isTricked = <%= isTricked ? 'true' : 'false' %>;
+
+        if (isTricked) {
+            // Wyświetlamy div z timerem
+            const timerDiv = document.getElementById('timer');
+            timerDiv.style.display = 'block';
+
+            let remaining = 30; // 30 sekund
+            const interval = setInterval(() => {
+                remaining--;
+                if (remaining > 0) {
+                    timerDiv.textContent = `Pozostało ${remaining} sekund na skorzystanie z oferty!`;
+                } else {
+                    clearInterval(interval);
+                    timerDiv.textContent = `Koniec promocji!`;
+                }
+            }, 1000);
+        }
+
+        // Pobranie wartości czasu wylosowanego w backendzie
+        const taskDuration = 30000; // Przeliczamy na milisekundy
+    
+        const progressBar = document.getElementById('progress-bar');
+        const form = document.getElementById('task6-form');
+        const timeoutInput = document.getElementById('timeout');
+
+        function startProgressBar(duration) {
+            const interval = 50; // Odświeżanie co 50ms
+            const step = 100 / (duration / interval); // Obliczenie kroku
+            let progress = 0;
+
+            const timer = setInterval(() => {
+                progress += step;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(timer);
+
+                    // Ustawienie znacznika timeout na true
+                    timeoutInput.value = 'true';
+
+                    // Automatyczne przesłanie formularza
+                    form.submit();
+                }
+                progressBar.style.width = `${progress}%`;
+            }, interval);
+        }
+
+        // Uruchomienie paska postępu
+        startProgressBar(taskDuration);
+    </script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> -->
+</body>
+</html>

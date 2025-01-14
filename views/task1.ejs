@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zadanie 1: Kolory</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .task-container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .btn-green {
+            background-color: #28a745;
+            color: white;
+            width: 300px;
+            height: 100px;
+            font-size: 20px;
+            margin-right: 10px; /* Odstęp między przyciskami */
+        }
+
+        .btn-red {
+            background-color: #dc3545;
+            color: white;
+            width: 300px;
+            height: 100px;
+            font-size: 20px;
+            margin-left: 10px; /* Odstęp między przyciskami */
+        }
+
+        .btn-green:hover, .btn-red:hover {
+            opacity: 0.8;
+        }
+
+        .progress {
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background-color: #007bff;
+            width: 0%;
+            height: 100%;
+            transition: width 0.1s linear;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="task-container">
+        <h1 class="mb-4">Wybierz najkorzystniejszą dla siebie opcję</h1>
+        <form action="/task1" method="POST" id="task1-form">
+            <div class="button-container">
+                <button type="submit" name="choice" value="green" class="btn btn-green">
+                    Dodaj ser<br><small>Opcja 10zł droższa</small>
+                </button>
+                
+                <button type="submit" name="choice" value="red" class="btn btn-red">
+                    Idź do koszyka<br><small>Zapłać za zamówienie</small>
+                </button>
+            </div>
+            <input type="hidden" name="timeout" id="timeout" value="false">
+        </form>
+        <!-- Pasek postępu -->
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript do obsługi paska postępu -->
+    <script>
+         // Pobranie wartości czasu wylosowanego w backendzie
+        const taskDuration = <%= wylosowanyCzas %> * 1000; // Przeliczamy na milisekundy
+        const progressBar = document.getElementById('progress-bar');
+        const form = document.getElementById('task1-form');
+        const timeoutInput = document.getElementById('timeout');
+
+        function startProgressBar(duration) {
+            const interval = 50; // Odświeżanie co 50ms
+            const step = 100 / (duration / interval); // Obliczenie kroku
+            let progress = 0;
+
+            const timer = setInterval(() => {
+                progress += step;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(timer);
+
+                    // Ustawienie znacznika timeout na true
+                    timeoutInput.value = 'true';
+
+                    // Automatyczne przesłanie formularza
+                    form.submit();
+                }
+                progressBar.style.width = `${progress}%`;
+            }, interval);
+        }
+
+        // Uruchomienie paska postępu
+        startProgressBar(taskDuration);
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

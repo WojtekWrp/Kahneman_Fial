@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zadanie 2: False Hierarchy</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh; /* Wysokość widoku */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .task-container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .btn-prefered {
+            background-color: #007bff;
+            color: white;
+            font-size: 18px;
+            padding: 15px 30px;
+            border-radius: 5px;
+            margin: 10px 0;
+            width: 100%;
+            border: none;
+        }
+
+        .btn-alternative {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            font-size: 14px;
+            padding: 10px 15px;
+            border-radius: 3px;
+            margin: 10px 0;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        .progress {
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background-color: #007bff;
+            width: 0%;
+            height: 100%;
+            transition: width 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+    <div class="task-container">
+        <h1 class="mb-4">Anulowanie subskrypcji?</h1>
+        <p class="text-muted">Możesz stracić dostęp do ekskluzywnych aktualizacji, ofert i promocji. Na pewno chcesz anulować?</p>
+        <form action="/task2" method="POST" id="task2-form">
+            <!-- Opcja preferowana -->
+            <button type="submit" name="choice" value="stay" class="btn btn-prefered">
+                Nie, chcę pozostać subskrybentem
+            </button>
+            <input type="hidden" name="timeout" id="timeout" value="false"> 
+            <!-- Opcja alternatywna -->
+            <button type="submit" name="choice" value="cancel" class="btn btn-alternative">
+                Tak, chcę anulować
+            </button>
+        </form>
+        <!-- Pasek postępu -->
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript do obsługi paska postępu -->
+    <script>
+         // Pobranie wartości czasu wylosowanego w backendzie
+         const taskDuration = <%= wylosowanyCzas %> * 1000; // Przeliczamy na milisekundy
+        const progressBar = document.getElementById('progress-bar');
+        const form = document.getElementById('task2-form');
+        const timeoutInput = document.getElementById('timeout');
+
+        function startProgressBar(duration) {
+            const interval = 50; // Odświeżanie co 50ms
+            const step = 100 / (duration / interval); // Obliczenie kroku
+            let progress = 0;
+
+            const timer = setInterval(() => {
+                progress += step;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(timer);
+
+                    // Ustawienie znacznika timeout na true
+                    timeoutInput.value = 'true';
+
+                    // Automatyczne przesłanie formularza
+                    form.submit();
+                }
+                progressBar.style.width = `${progress}%`;
+            }, interval);
+        }
+
+        // Uruchomienie paska postępu
+        startProgressBar(taskDuration);
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

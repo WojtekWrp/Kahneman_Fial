@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wprowadzenie do Zadania</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .loading-container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .loading-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .loading-container p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #6c757d;
+        }
+
+        .progress {
+            height: 25px;
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background-color: #007bff;
+            width: 0%;
+            height: 100%;
+            transition: width 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <h1>Uwaga! Na zadanie będziesz miał <%= wylosowanyCzas %> sekund.</h1>  
+        <p>Jesteś w trakcie zakupu książki, która jest przeznaczona na prezent świąteczny. Przejdź do płatności.</p>
+        <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        // Czas trwania ładowania w milisekundach
+        const loadingDuration = 8000;
+        const progressBar = document.getElementById('progress-bar');
+
+        // Funkcja wypełniająca pasek postępu
+        function startProgressBar(duration) {
+            const interval = 50; // Odświeżanie co 50ms
+            const step = 100 / (duration / interval); // Obliczenie kroku
+            let progress = 0;
+
+            const timer = setInterval(() => {
+                progress += step;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(timer);
+                    window.location.href = '/task6';
+                }
+                progressBar.style.width = `${progress}%`;
+            }, interval);
+        }
+
+        // Uruchom pasek postępu
+        startProgressBar(loadingDuration);
+    </script>
+</body>
+</html>

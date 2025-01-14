@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Zadanie 7 – Ubezpieczenie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .task-container {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        .highlight-red {
+            color: red;
+            font-weight: bold;
+        }
+        .highlight-green {
+            color: green;
+            font-weight: bold;
+        }
+        .submit-btn {
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .progress {
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background-color: #007bff;
+            width: 0%;
+            height: 100%;
+            transition: width 0.1s linear;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div class="task-container">
+        <h1>Zakupy</h1>
+        
+        <form action="/task7" method="POST" id="task7-form">
+            <!-- Smartfon domyślnie zaznaczony --> 
+            <label>
+                <input type="checkbox" name="smartfon" value="smartfon" checked>
+                Smartfon (3050 zł)
+            </label>
+            <br>
+            
+            <!-- Ubezpieczenie - 50 zł -->
+            <label>
+                <input type="checkbox" name="ubezpieczenie" value="True">
+                Ubezpieczenie (50 zł)
+            </label>
+
+            <!-- W zależności od wersji (negative/positive) zmieniamy kolor i tekst -->
+            <% if (wersja === 'negative') { %>
+                <p class="highlight-red">Na pewno chcesz ryzykować stłuczonym ekranem?</p>
+            <% } else { %>
+                <p class="highlight-green">Klikając, zabezpieczasz się na przyszłość :)</p>
+            <% } %>
+
+            <button type="submit" class="submit-btn">Przejdź do zakupu</button>
+            <input type="hidden" name="timeout" id="timeout" value="false">
+        </form>
+         <!-- Pasek postępu -->
+         <div class="progress">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    // Zakładamy, że w routes/task7.js robisz coś w stylu:
+    // res.render('task4', { wylosowanyCzas: 5 });
+    const taskDuration = 30 * 1000; // milisekundy
+    const progressBar = document.getElementById('progress-bar');
+
+    function startProgressBar(duration) {
+        const interval = 50; // co 50ms
+        const step = 100 / (duration / interval);
+        let progress = 0;
+
+        const timer = setInterval(() => {
+            progress += step;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(timer);
+
+                // Automatyczne wysyłanie formularza po zakończeniu paska
+                document.getElementById('task7-form').submit();
+            }
+            progressBar.style.width = `${progress}%`;
+        }, interval);
+    }
+
+    startProgressBar(taskDuration);
+</script>
