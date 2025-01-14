@@ -11,4 +11,11 @@ router.get('/', (req, res) => {
   res.render('intro_task1', { wylosowanyCzas });
 });
 
+router.post('/', (req, res) => {
+res.redirect('/task1');
+});
+
+
+
+
 module.exports = router;

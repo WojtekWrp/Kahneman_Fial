@@ -38,7 +38,7 @@
             color: #6c757d;
         }
 
-        .progress {
+        /* .progress {
             height: 25px;
             border-radius: 50px;
             overflow: hidden;
@@ -49,6 +49,18 @@
             width: 0%;
             height: 100%;
             transition: width 0.1s linear;
+        } */
+        .submit-btn {
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
@@ -56,9 +68,13 @@
     <div class="loading-container">
         <h1>Uwaga! Na zadanie będziesz miał <%= wylosowanyCzas %> sekund.</h1>
         <p>Jesteś w trakcie rejestracji. Uzupełniłeś już wszystkie dane osobowe. Dokończ proces rejestracji.</p>
-        <div class="progress">
+        <form action="/intro_task4" method="POST" id="intro_task4-form">
+            <button type="submit" class="submit-btn">Przejdź do zadania</button>
+        </form>
+        <!-- <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
-        </div>
+        </div> -->
+     
     </div>
 
     <script>

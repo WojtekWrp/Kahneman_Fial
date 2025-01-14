@@ -38,7 +38,7 @@
             color: #6c757d;
         }
 
-        .progress {
+        /* .progress {
             height: 25px;
             border-radius: 50px;
             overflow: hidden;
@@ -49,6 +49,18 @@
             width: 0%;
             height: 100%;
             transition: width 0.1s linear;
+        } */
+        .submit-btn {
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
@@ -56,35 +68,38 @@
     <div class="loading-container">
         <h1>Uwaga! Na zadanie będziesz miał <%= wylosowanyCzas %> sekund.</h1>  
         <p>Jesteś w trakcie zamawiania pokoju hotelowego na wakacje. Wybierz interesujące Cię opcje i przejdź do płatności.</p>
-        <div class="progress">
+        <form action="/intro_task8" method="POST" id="intro_task8-form">
+            <button type="submit" class="submit-btn">Przejdź do zadania</button>
+        </form>
+        <!-- <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
-        </div>
+        </div> -->
     </div>
 
     <script>
-        // Czas trwania ładowania w milisekundach
-        const loadingDuration = 8000;
-        const progressBar = document.getElementById('progress-bar');
+        // // Czas trwania ładowania w milisekundach
+        // const loadingDuration = 8000;
+        // const progressBar = document.getElementById('progress-bar');
 
-        // Funkcja wypełniająca pasek postępu
-        function startProgressBar(duration) {
-            const interval = 50; // Odświeżanie co 50ms
-            const step = 100 / (duration / interval); // Obliczenie kroku
-            let progress = 0;
+        // // Funkcja wypełniająca pasek postępu
+        // function startProgressBar(duration) {
+        //     const interval = 50; // Odświeżanie co 50ms
+        //     const step = 100 / (duration / interval); // Obliczenie kroku
+        //     let progress = 0;
 
-            const timer = setInterval(() => {
-                progress += step;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(timer);
-                    window.location.href = '/task8';
-                }
-                progressBar.style.width = `${progress}%`;
-            }, interval);
-        }
+        //     const timer = setInterval(() => {
+        //         progress += step;
+        //         if (progress >= 100) {
+        //             progress = 100;
+        //             clearInterval(timer);
+        //             window.location.href = '/task8';
+        //         }
+        //         progressBar.style.width = `${progress}%`;
+        //     }, interval);
+        // }
 
-        // Uruchom pasek postępu
-        startProgressBar(loadingDuration);
+        // // Uruchom pasek postępu
+        // startProgressBar(loadingDuration);
     </script>
 </body>
 </html>

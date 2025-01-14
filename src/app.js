@@ -56,7 +56,7 @@ function checkSession(req, res, next) {
 
 
 function getRandomTime() {
-    const mozliweCzasy = [5, 30];
+    const mozliweCzasy = [10, 30];
     return mozliweCzasy[Math.floor(Math.random() * mozliweCzasy.length)];
   }
 
