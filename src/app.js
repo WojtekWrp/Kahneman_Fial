@@ -132,23 +132,22 @@ function checkTaskProgress(req, res, next) {
 
 
 
-
-
-
-
-
-
 // Statyczne pliki (np. style.css, script.js)
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Strona główna
 app.get('/', (req, res) => {
-    res.send('<h1>Witaj w aplikacji Kahneman!</h1><p><a href="/register">Rejestracja</a></p>');
+    res.redirect('/register'); // Przekierowanie na stronę rejestracji
 });
 
-// Rejestracja
 app.get('/register', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'views', 'register.html'));
+    // Czyszczenie danych sesji
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Błąd przy niszczeniu sesji:', err);
+        }
+        res.sendFile(path.join(__dirname, '..', 'views', 'register.html'));
+    });
 });
 
 app.post('/register', (req, res) => {
@@ -247,8 +246,6 @@ app.use('/intro_task4', (req, res, next) => {
 app.use('/task4', checkSession, checkTaskProgress, task4Routes);
 
 
-
-
 // Intro do Task5
 //PRESELECTIONS
 app.use('/intro_task5', (req, res, next) => {
@@ -310,8 +307,6 @@ app.use('/task8', checkSession, checkTaskProgress, task8Routes);
 //Outro- koniec
 app.use('/outro', checkSession, checkTaskProgress, outroRouter);
   
-
-
 
 // Uruchomienie serwera
 app.listen(PORT, () => {
