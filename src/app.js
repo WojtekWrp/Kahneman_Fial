@@ -31,6 +31,14 @@ const PORT = 5000;
 // Konfiguracja body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Middleware do zapobiegania cache'owaniu
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '-1');
+    next();
+  });
+
 // Ustawienie EJS jako silnika szablonów
 app.set('view engine', 'ejs');
 

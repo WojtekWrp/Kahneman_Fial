@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db'); // Import konfiguracji bazy danych
@@ -6,15 +7,42 @@ const db = require('../config/db'); // Import konfiguracji bazy danych
 router.get('/', (req, res) => {
     // Odczytujemy wylosowany czas z sesji (ustawiony w app.js lub w /intro_task3)
     const wylosowanyCzas = req.session.maxCzas || 5;
+    const taskToken = crypto.randomBytes(16).toString('hex');
+    req.session.taskToken = taskToken; // Zapisanie tokenu w sesji
 
     console.log('[GET /task3] Odczytany maxCzas z sesji =', wylosowanyCzas);
     req.session.taskStart = Date.now();
+
     // Renderujemy widok 'task3.ejs' i przekazujemy wylosowanyCzas
-    res.render('task3', { wylosowanyCzas });
+    res.render('task3', {
+    wylosowanyCzas,
+    taskToken,
+    completedTasks: req.session.completedTasks || [] // Przekazywanie completedTasks do widoku
+    });
+    
+
 });
 
 // POST /task3 – obsługa formularza zadania 3
 router.post('/', (req, res) => {
+
+  const { taskToken } = req.body; 
+  // Walidacja tokenu
+  if (taskToken !== req.session.taskToken) {
+    return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
+  }
+
+  // Ensure `completedTasks` exists as an array
+  req.session.completedTasks = req.session.completedTasks || [];
+
+  // Sprawdzenie, czy zadanie zostało ukończone
+  if (req.session.completedTasks.includes('task3')) {
+    return res.status(400).send('To zadanie zostało już ukończone.');
+  }
+
+
+
+
   const timeout = req.body.timeout === 'true';
   // Zaczytujemy moment startu
   const startTimestamp = req.session.taskStart;
@@ -68,8 +96,12 @@ router.post('/', (req, res) => {
             return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
         }
 
-        // Przekierowanie do kolejnego intro (np. /intro_task4)
-        res.redirect('/intro_task4');
+           // Oznaczenie zadania jako ukończone
+    req.session.completedTasks.push('task3');
+    delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
+   // Przekierowanie do kolejnego intro (np. /intro_task4)
+   res.redirect('/intro_task4');
+
     });
 });
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db'); // Import konfiguracji bazy danych
+const crypto = require('crypto');
 
 // GET /task2 – wyświetlenie zadania
 router.get('/', (req, res) => {
@@ -9,12 +10,34 @@ router.get('/', (req, res) => {
     console.log('[GET /task2] Odczytany maxCzas z sesji =', wylosowanyCzas);
     req.session.taskStart = Date.now();
     // Renderujemy szablon ejs 'task2.ejs' z przekazaną zmienną
-    res.render('task2', { wylosowanyCzas });
+
+     // Generowanie unikalnego tokenu
+      const taskToken = crypto.randomBytes(16).toString('hex');
+      req.session.taskToken = taskToken; // Zapisanie tokenu w sesji
+
+      res.render('task2', {
+        wylosowanyCzas,
+        taskToken,
+        completedTasks: req.session.completedTasks || [] // Przekazywanie completedTasks do widoku
+      });
 });
 
 
 // POST /task2 – obsługa formularza
 router.post('/', (req, res) => {
+
+  const { taskToken } = req.body; 
+  // Walidacja tokenu
+  if (taskToken !== req.session.taskToken) {
+    return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
+  }
+  // Ensure `completedTasks` exists as an array
+  req.session.completedTasks = req.session.completedTasks || [];
+
+  // Sprawdzenie, czy zadanie zostało ukończone
+  if (req.session.completedTasks.includes('task2')) {
+    return res.status(400).send('To zadanie zostało już ukończone.');
+  }
 
 
 
@@ -76,8 +99,11 @@ router.post('/', (req, res) => {
             return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
         }
 
-        // Przekierowanie do intro kolejnego zadania (np. task 3)
-        res.redirect('/intro_task3');
+
+    // Oznaczenie zadania jako ukończone
+    req.session.completedTasks.push('task2');
+    delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu    
+    res.redirect('/intro_task3');// Przekierowanie do intro kolejnego zadania (np. task 3)
     });
 });
 

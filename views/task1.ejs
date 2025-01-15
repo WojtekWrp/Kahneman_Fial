@@ -71,25 +71,32 @@
     </style>
 </head>
 <body>
-    <div class="task-container">
-        <h1 class="mb-4">Wybierz najkorzystniejszą dla siebie opcję</h1>
-        <form action="/task1" method="POST" id="task1-form">
+
+    <% if (completedTasks && completedTasks.includes('task1')) { %>
+        <p>To zadanie zostało już ukończone.</p>
+      <% } 
+      else { %>
+        <div class="task-container">
+          <h1 class="mb-4">Wybierz najkorzystniejszą dla siebie opcję</h1>
+          <form action="/task1" method="POST" id="task1-form">
             <div class="button-container">
-                <button type="submit" name="choice" value="green" class="btn btn-green">
-                    Dodaj ser<br><small>Opcja 10zł droższa</small>
-                </button>
-                
-                <button type="submit" name="choice" value="red" class="btn btn-red">
-                    Idź do koszyka<br><small>Zapłać za zamówienie</small>
-                </button>
+              <button type="submit" name="choice" value="green" class="btn btn-green">
+                Dodaj ser<br><small>Opcja 10zł droższa</small>
+              </button>
+              <button type="submit" name="choice" value="red" class="btn btn-red">
+                Idź do koszyka<br><small>Zapłać za zamówienie</small>
+              </button>
             </div>
+            <input type="hidden" name="taskToken" value="<%= taskToken %>">
             <input type="hidden" name="timeout" id="timeout" value="false">
-        </form>
-        <!-- Pasek postępu -->
-        <div class="progress">
+          </form>
+          <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
+          </div>
         </div>
-    </div>
+      <% } %>
+
+    
 
     <!-- JavaScript do obsługi paska postępu -->
     <script>
@@ -122,6 +129,23 @@
 
         // Uruchomienie paska postępu
         startProgressBar(taskDuration);
+
+
+
+
+        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
+    window.onpopstate = function () {
+        alert("Nie możesz wrócić do poprzedniej strony. Przekierowanie do strony głównej.");
+        window.location.href = "/register";  // Przekierowanie lub inna strona zabezpieczająca
+    };
+    // Zapobiegaj zapisywaniu tej strony w historii
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, location.href);
+    });
+
+
+    
     </script>
 
     <!-- Bootstrap JS -->

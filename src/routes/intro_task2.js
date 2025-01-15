@@ -12,8 +12,8 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  res.redirect('/task2');
-  });
+res.redirect('/task2');
+});
 
 
 

@@ -72,6 +72,11 @@
     </style>
 </head>
 <body>
+
+    <% if (completedTasks && completedTasks.includes('task6')) { %>
+        <p>To zadanie zostało już ukończone.</p>
+      <% } 
+      else { %>
     <div class="task-container">
         <h1>Zakupy</h1>
     
@@ -96,13 +101,15 @@
 
             <button type="submit" class="submit-btn">Przejdź do zakupu</button>
             <input type="hidden" name="timeout" id="timeout" value="false">
+            <input type="hidden" name="taskToken" value="<%= taskToken %>">
         </form>
              <!-- Pasek postępu -->
              <div class="progress">
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
     </div>
-    
+    <% } %>
+
 
 
 

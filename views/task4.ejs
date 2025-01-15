@@ -67,6 +67,11 @@
     </style>
 </head>
 <body>
+
+    <% if (completedTasks && completedTasks.includes('task4')) { %>
+        <p>To zadanie zostało już ukończone.</p>
+     <% } 
+     else { %>
     <div class="task-container">
         <h1>Wybierz najkorzystniejszą dla siebie opcję</h1>
         
@@ -100,6 +105,7 @@
             </table>
             <button type="submit" class="submit-btn">Zarejestruj się</button>
             <input type="hidden" name="timeout" id="timeout" value="false">
+            <input type="hidden" name="taskToken" value="<%= taskToken %>">
         </form>
 
         <!-- Pasek postępu -->
@@ -107,6 +113,13 @@
             <div class="progress-bar" id="progress-bar"></div>
         </div>
     </div>
+    <% } %>
+
+
+
+
+
+
 
     <script>
        // Pobranie wartości czasu wylosowanego w backendzie

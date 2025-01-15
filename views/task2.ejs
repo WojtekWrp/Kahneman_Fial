@@ -72,6 +72,10 @@
     </style>
 </head>
 <body>
+
+<% if (completedTasks && completedTasks.includes('task2')) { %>
+    <p>To zadanie zostało już ukończone.</p>
+<% } else { %>
     <div class="task-container">
         <h1 class="mb-4">Anulowanie subskrypcji?</h1>
         <p class="text-muted">Możesz stracić dostęp do ekskluzywnych aktualizacji, ofert i promocji. Na pewno chcesz anulować?</p>
@@ -80,6 +84,7 @@
             <button type="submit" name="choice" value="stay" class="btn btn-prefered">
                 Nie, chcę pozostać subskrybentem
             </button>
+            <input type="hidden" name="taskToken" value="<%= taskToken %>">
             <input type="hidden" name="timeout" id="timeout" value="false"> 
             <!-- Opcja alternatywna -->
             <button type="submit" name="choice" value="cancel" class="btn btn-alternative">
@@ -91,6 +96,9 @@
             <div class="progress-bar" id="progress-bar"></div>
         </div>
     </div>
+<% } %>
+
+
 
     <!-- JavaScript do obsługi paska postępu -->
     <script>
@@ -121,8 +129,22 @@
             }, interval);
         }
 
+      
         // Uruchomienie paska postępu
         startProgressBar(taskDuration);
+        
+            // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
+    window.onpopstate = function () {
+        alert("Nie możesz wrócić do poprzedniej strony. Przekierowanie do strony głównej.");
+        window.location.href = "/register";  // Przekierowanie lub inna strona zabezpieczająca
+    };
+    // Zapobiegaj zapisywaniu tej strony w historii
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, location.href);
+    });
+
+    
     </script>
 
     <!-- Bootstrap JS -->

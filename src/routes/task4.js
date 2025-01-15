@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db'); // Import konfiguracji bazy danych
@@ -8,27 +9,54 @@ router.get('/', (req, res) => {
     req.session.taskStart = Date.now();
     // Odczytujemy wylosowany czas z sesji (ustawiony wcześniej w app.js lub /intro_task4)
     const wylosowanyCzas = req.session.maxCzas || 5; 
+    const taskToken = crypto.randomBytes(16).toString('hex');
+    req.session.taskToken = taskToken; // // Zapisanie tokenu w sesji
+
     console.log('[GET /task4] Odczytano maxCzas z sesji =', wylosowanyCzas);
 
+   
+   
+   
     // Renderujemy widok 'task4.ejs' z wartością wylosowanyCzas
-    res.render('task4', { wylosowanyCzas });
+    res.render('task4', {
+    wylosowanyCzas,
+    taskToken,
+    completedTasks: req.session.completedTasks || [] // Przekazywanie completedTasks do widoku
+  });
+
 });
 
 // POST /task4 – zapis wyniku
 router.post('/', (req, res) => {
 
-        // Pobieramy znacznik timeout
-        const timeout = req.body.timeout === 'true';  
-        console.log("czy wysłany po timeoucie?", timeout);
 
-        // Zaczytujemy moment startu
-        const startTimestamp = req.session.taskStart;
-        // Jeśli z jakiegoś powodu jest undefined, wstawiamy 0
-        const realStart = startTimestamp || 0;
-        const now = Date.now();
-        // Różnica w sekundach (lub milisekundach, zależnie co wolisz w bazie)
-        const czasOdpowiedziRzeczywisty = (now - realStart) / 1000;  //sekundy
-        const czasOdpowiedzi = czasOdpowiedziRzeczywisty;
+
+    const { taskToken } = req.body; 
+    // Walidacja tokenu
+    if (taskToken !== req.session.taskToken) {
+      return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
+    }
+  
+    // Ensure `completedTasks` exists as an array
+    req.session.completedTasks = req.session.completedTasks || [];
+  
+    // Sprawdzenie, czy zadanie zostało ukończone
+    if (req.session.completedTasks.includes('task4')) {
+      return res.status(400).send('To zadanie zostało już ukończone.');
+    }
+
+
+    // Pobieramy znacznik timeout
+    const timeout = req.body.timeout === 'true';  
+    console.log("czy wysłany po timeoucie?", timeout);
+    // Zaczytujemy moment startu
+    const startTimestamp = req.session.taskStart;
+    // Jeśli z jakiegoś powodu jest undefined, wstawiamy 0
+    const realStart = startTimestamp || 0;
+    const now = Date.now();
+     // Różnica w sekundach (lub milisekundach, zależnie co wolisz w bazie)
+    const czasOdpowiedziRzeczywisty = (now - realStart) / 1000;  //sekundy
+    const czasOdpowiedzi = czasOdpowiedziRzeczywisty;
 
     // Pobieramy wartość z formularza (checkbox).
     // Jeśli user nie zaznaczył, w ogóle nie pojawi się w req.body (lub będzie pusty).
@@ -74,8 +102,11 @@ router.post('/', (req, res) => {
             return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
         }
 
-        // Po zapisie przekierowujemy np. do intro_task5
-        res.redirect('/intro_task5');
+     // Oznaczenie zadania jako ukończone
+    req.session.completedTasks.push('task4');
+    delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
+    // Po zapisie przekierowujemy np. do intro_task5
+    res.redirect('/intro_task5');
     });
 });
 

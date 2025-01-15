@@ -1,5 +1,5 @@
-// routes/task6.js
-
+// routes/task8.js
+const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
@@ -25,6 +25,11 @@ router.get('/', (req, res) => {
     req.session.maxCzas = maxCzas;
     req.session.isTricked = isTricked;
 
+     // Generowanie unikalnego tokenu
+      const taskToken = crypto.randomBytes(16).toString('hex');
+      req.session.taskToken = taskToken; // Zapisanie tokenu w sesji 
+
+
     // Zapisujemy moment startu (rzeczywistego wejścia na /task6)
     req.session.taskStart = Date.now();
 
@@ -34,12 +39,41 @@ router.get('/', (req, res) => {
       taskStart: req.session.taskStart
     });
 
+
+
+
     // Renderujemy widok task8.ejs, przekazujemy isTricked i maxCzas
-    res.render('task8', { isTricked, maxCzas });
+    res.render('task8', {
+      isTricked,
+      maxCzas,
+      taskToken,
+      completedTasks: req.session.completedTasks || [] // Przekazywanie completedTasks do widoku
+    });
+
+
+
+
 });
 
 // POST /task8 – zapis wyniku w tabeli `socialproof`
 router.post('/', (req, res) => {
+
+
+  const { taskToken } = req.body; 
+  // Walidacja tokenu
+  if (taskToken !== req.session.taskToken) {
+    return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
+  }
+
+  // Ensure `completedTasks` exists as an array
+  req.session.completedTasks = req.session.completedTasks || [];
+
+  // Sprawdzenie, czy zadanie zostało ukończone
+  if (req.session.completedTasks.includes('task8')) {
+    return res.status(400).send('To zadanie zostało już ukończone.');
+  }
+
+
 
   // Pobieramy znacznik timeout
   const timeout = req.body.timeout === 'true';  
@@ -123,8 +157,14 @@ router.post('/', (req, res) => {
             return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
         }
 
-        // Po zapisie przekierowujemy np. do /intro_task7
-        res.redirect('/outro');
+
+
+     // Oznaczenie zadania jako ukończone
+    req.session.completedTasks.push('task8');
+    delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
+
+    // Po zapisie przekierowujemy np. do /intro_task7
+    res.redirect('/outro');
     });
 });
 

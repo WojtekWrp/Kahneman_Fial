@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const router = express.Router();
 const db = require('../config/db');
 
@@ -12,13 +13,40 @@ router.get('/', (req, res) => {
     const isNegative = Math.random() < 0.5;  // 50% szans na negative, 50% na positive
     const wersja = isNegative ? 'negative' : 'positive';
     console.log("wylosowana wersja", wersja);
+
+    // Generowanie unikalnego tokenu
+    const taskToken = crypto.randomBytes(16).toString('hex');
+    req.session.taskToken = taskToken; // Zapisanie tokenu w sesji
+   
+
     req.session.wersja = wersja; // Zapisujemy w sesji
     // Renderujemy plik EJS z wylosowaną wersją
-    res.render('task7', { wersja });
+    res.render('task7', {
+      taskToken,
+      wersja,
+      completedTasks: req.session.completedTasks || [] // Przekazywanie completedTasks do widoku
+    });
+
+
 });
 
 // POST /task7 – obsługa formularza (ubezpieczenie / brak ubezpieczenia)
 router.post('/', (req, res) => {
+
+
+  const { taskToken } = req.body; 
+  // Walidacja tokenu
+  if (taskToken !== req.session.taskToken) {
+    return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
+  }
+
+  // Ensure `completedTasks` exists as an array
+  req.session.completedTasks = req.session.completedTasks || [];
+
+  // Sprawdzenie, czy zadanie zostało ukończone
+  if (req.session.completedTasks.includes('task7')) {
+    return res.status(400).send('To zadanie zostało już ukończone.');
+  }
     // Pobieramy znacznik timeout
     const timeout = req.body.timeout === 'true';  
     console.log("czy wysłany po timeoucie?", timeout);
@@ -72,8 +100,15 @@ router.post('/', (req, res) => {
           return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
       }
 
-      // Po zapisie przekierowujemy np. do /intro_task7
-      res.redirect('/intro_task8');
+
+
+
+    // Oznaczenie zadania jako ukończone
+    req.session.completedTasks.push('task7');
+    delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
+
+    // Po zapisie przekierowujemy np. do /intro_task7
+    res.redirect('/intro_task8');
   });
 });
 module.exports = router;
