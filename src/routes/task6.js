@@ -109,7 +109,7 @@ router.post('/', (req, res) => {
         delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
 
         // Przekierowanie do kolejnego zadania
-        res.redirect('/intro_task7');
+        res.redirect('/intro_nudging3');
     });
 });
 

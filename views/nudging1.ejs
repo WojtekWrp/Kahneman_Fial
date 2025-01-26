@@ -27,7 +27,7 @@
         }
 
         .btn-prefered {
-            background-color: #007bff;
+            background-color: firebrick;
             color: white;
             font-size: 18px;
             padding: 15px 30px;
@@ -73,24 +73,24 @@
 </head>
 <body>
 
-<% if (completedTasks && completedTasks.includes('task2')) { %>
+<% if (completedTasks && completedTasks.includes('nudging1')) { %>
     <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
         <a href="/register">strony rejestracji</a>.
     </p>
 <% } else { %>
     <div class="task-container">
-        <h1 class="mb-4">Anulowanie subskrypcji?</h1>
-        <p class="text-muted">Możesz stracić dostęp do ekskluzywnych aktualizacji, ofert i promocji. Na pewno chcesz anulować?</p>
-        <form action="/task2" method="POST" id="task2-form">
+        <h1 class="mb-4">Wylogowywanie się</h1>
+        <p class="text-muted">Nie chcesz korzystać już z naszej strony?</p>
+        <form action="/nudging1" method="POST" id="nudging1-form">
             <!-- Opcja preferowana -->
             <button type="submit" name="choice" value="stay" class="btn btn-prefered">
-                Nie, chcę pozostać subskrybentem
+                Tak, chcę się wylogować
             </button>
             <input type="hidden" name="taskToken" value="<%= taskToken %>">
             <input type="hidden" name="timeout" id="timeout" value="false"> 
             <!-- Opcja alternatywna -->
             <button type="submit" name="choice" value="cancel" class="btn btn-alternative">
-                Tak, chcę anulować
+                Nie, pozostań na stronie
             </button>
         </form>
         <!-- Pasek postępu -->
@@ -105,7 +105,7 @@
     <!-- JavaScript do obsługi paska postępu -->
     <script>
          // Pobranie wartości czasu wylosowanego w backendzie
-         const taskDuration = <%= wylosowanyCzas %> * 1000; // Przeliczamy na milisekundy
+        const taskDuration = <%= wylosowanyCzas %> * 1000; // Przeliczamy na milisekundy
         const progressBar = document.getElementById('progress-bar');
         const form = document.getElementById('task2-form');
         const timeoutInput = document.getElementById('timeout');
@@ -115,36 +115,36 @@
             const step = 100 / (duration / interval); // Obliczenie kroku
             let progress = 0;
 
-            const timer = setInterval(() => {
-                progress += step;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(timer);
+        const timer = setInterval(() => {
+            progress += step;
+            if (progress >= 100) {
+                progress = 100;
+                learInterval(timer);
 
-                    // Ustawienie znacznika timeout na true
-                    timeoutInput.value = 'true';
+                // Ustawienie znacznika timeout na true
+                timeoutInput.value = 'true';
 
-                    // Automatyczne przesłanie formularza
-                    form.submit();
+                // Automatyczne przesłanie formularza
+                form.submit();
                 }
-                progressBar.style.width = `${progress}%`;
+             progressBar.style.width = `${progress}%`;
             }, interval);
         }
 
       
         // Uruchomienie paska postępu
         startProgressBar(taskDuration);
-        
-            // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
-    window.onpopstate = function () {
+            
+        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
+        window.onpopstate = function () {
         alert("Nie możesz wrócić do poprzedniej strony. Przekierowanie do strony głównej.");
         window.location.href = "/register";  // Przekierowanie lub inna strona zabezpieczająca
-    };
-    // Zapobiegaj zapisywaniu tej strony w historii
-    history.pushState(null, null, location.href);
-    window.addEventListener('popstate', function () {
+        };
+        // Zapobiegaj zapisywaniu tej strony w historii
         history.pushState(null, null, location.href);
-    });
+        window.addEventListener('popstate', function () {
+        history.pushState(null, null, location.href);
+        });
 
     
     </script>

@@ -127,7 +127,7 @@ router.post('/', (req, res) => {
 
         const updateSessionSql = ` 
         UPDATE sesja
-        SET koniec_sesji = NOW()
+        SET koniec_sesji = CURRENT_TIMESTAMP
         WHERE id_sesji = ?
     `;//zakonczenie sesji
 

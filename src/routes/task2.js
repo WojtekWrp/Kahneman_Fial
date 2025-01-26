@@ -103,7 +103,7 @@ router.post('/', (req, res) => {
     // Oznaczenie zadania jako ukończone
     req.session.completedTasks.push('task2');
     delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu    
-    res.redirect('/intro_task3');// Przekierowanie do intro kolejnego zadania (np. task 3)
+    res.redirect('/intro_nudging2');// Przekierowanie do intro kolejnego zadania (np. task 3)
     });
 });
 

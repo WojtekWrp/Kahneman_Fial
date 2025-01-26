@@ -4,15 +4,11 @@ const bodyParser = require('body-parser');
 const db = require('./config/db'); // db z /src/config
 const path = require('path');
 
-const task1Routes = require('./routes/task1'); 
-const task2Routes = require('./routes/task2'); 
-const task3Routes = require('./routes/task3');
-const task4Routes = require('./routes/task4');
-const task5Routes = require('./routes/task5');
-const task6Routes = require('./routes/task6');
-const task7Routes = require('./routes/task7');
-const task8Routes = require('./routes/task8');
+const registerRoutes = require('./routes/register');
 
+const introNudging1Router = require('./routes/intro_nudging1');
+const introNudging2Router = require('./routes/intro_nudging2');
+const introNudging3Router = require('./routes/intro_nudging3')
 const introTask1Router = require('./routes/intro_task1');
 const introTask2Router = require('./routes/intro_task2');
 const introTask3Router = require('./routes/intro_task3');
@@ -21,6 +17,18 @@ const introTask5Router = require('./routes/intro_task5');
 const introTask6Router = require('./routes/intro_task6');
 const introTask7Router = require('./routes/intro_task7');
 const introTask8Router = require('./routes/intro_task8');
+
+const nudging1Routes = require('./routes/nudging1');
+const nudging2Routes = require('./routes/nudging2');
+const nudging3Routes = require('./routes/nudging3');
+const task1Routes = require('./routes/task1'); 
+const task2Routes = require('./routes/task2'); 
+const task3Routes = require('./routes/task3');
+const task4Routes = require('./routes/task4');
+const task5Routes = require('./routes/task5');
+const task6Routes = require('./routes/task6');
+const task7Routes = require('./routes/task7');
+const task8Routes = require('./routes/task8');
 
 const outroRouter = require('./routes/outro');
 
@@ -41,10 +49,7 @@ app.use((req, res, next) => {
 
 // Ustawienie EJS jako silnika szablonów
 app.set('view engine', 'ejs');
-
 app.set('views', path.join(__dirname, '..', 'views')); //ścieżka do widoków
-
-
 
 // Konfiguracja sesji
 app.use(session({
@@ -61,132 +66,30 @@ function checkSession(req, res, next) {
     next();
 }
 
-
-
 function getRandomTime() {
     const mozliweCzasy = [10, 30];
     return mozliweCzasy[Math.floor(Math.random() * mozliweCzasy.length)];
   }
 
 
-// Middleware do sprawdzania postępu użytkownika
-function checkTaskProgress(req, res, next) {
-    const currentPath = req.path; // np. /task2
-    const sessionId = req.session.sessionId;
-
-    console.log('Sprawdzam postęp użytkownika...');
-    console.log('Aktualna ścieżka:', currentPath);
-    console.log('sessionId:', sessionId);
-
-    if (!sessionId) {
-        console.error('Brak sessionId – przekierowanie do rejestracji.');
-        return res.redirect('/register');
-    }
-    
-
-    let sql;
-    if (currentPath === '/task2') {
-        sql = 'SELECT COUNT(*) AS completed FROM kolory WHERE id_sesji = ?';
-        console.log('Sprawdzam postęp dla zadania 1 (tabela kolory).');
-    } else if (currentPath === '/task3') {
-        sql = 'SELECT COUNT(*) AS completed FROM false_hierarchy WHERE id_sesji = ?';
-        console.log('Sprawdzam postęp dla zadania 2 (tabela false_hierarchy).');
-    } else {
-        console.log('Brak wymogu weryfikacji dla tej ścieżki.');
-        return next();
-    }
-
-
-    console.log('Wykonuję zapytanie SQL:', sql);
-    console.log('Używając sessionId:', sessionId);
-    db.query(sql, [sessionId], (err, result) => {
-        if (err) {
-            console.error('Błąd SQL:', err.message);
-            return res.status(500).send('Wystąpił błąd.');
-        }
-        console.log('Wynik zapytania:', result);
-    });
-    
-
-    db.query(sql, [sessionId], (err, result) => {
-        if (err) {
-            console.error('Błąd przy sprawdzaniu postępu:', err.message);
-            return res.status(500).send('Wystąpił błąd przy sprawdzaniu postępu.');
-        }
-
-        console.log('Wynik zapytania SQL:', result);
-
-        const isCompleted = result[0].completed > 0;
-        console.log('Czy zadanie zostało ukończone?', isCompleted);
-
-        if (!isCompleted) {
-            console.warn('Poprzednie zadanie nie zostało ukończone – przekierowanie do /register.');
-            return res.redirect('/register');
-        }
-
-        console.log('Poprzednie zadanie ukończone – kontynuuję.');
-        next();
-    });
-}
-
-
-
 
 // Statyczne pliki (np. style.css, script.js)
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+
 // Strona główna
 app.get('/', (req, res) => {
-    res.redirect('/register'); // Przekierowanie na stronę rejestracji
+  res.redirect('/register'); // Przekierowanie do strony rejestracji
 });
+app.use('/register', registerRoutes);
 
-app.get('/register', (req, res) => {
-    // Czyszczenie danych sesji
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('Błąd przy niszczeniu sesji:', err);
-        }
-        res.sendFile(path.join(__dirname, '..', 'views', 'register.html'));
-    });
-});
-
-app.post('/register', (req, res) => {
-    const { wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia } = req.body;
-
-    const sql = `
-        INSERT INTO uzytkownicy (wiek, plec, id_wyksztalcenia, uczelnia, id_rodzaju_wyksztalcenia)
-        VALUES (?, ?, ?, ?, ?)
-    `;
-    db.query(sql, [wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia], (err, result) => {
-        if (err) {
-            console.error('Błąd przy rejestracji:', err.message);
-            return res.status(500).send('Wystąpił błąd podczas rejestracji.');
-        }
-
-        console.log("studia", rodzaj_wyksztalcenia);
-        const userId = result.insertId;
-        const startTime = new Date();
-        const sessionSql = 'INSERT INTO sesja (id_uzytkownika, rozp_sesji) VALUES (?, ?)';
-        db.query(sessionSql, [userId, startTime], (err, sessionResult) => {
-            if (err) {
-                console.error('Błąd przy tworzeniu sesji:', err.message);
-                return res.status(500).send('Wystąpił błąd przy tworzeniu sesji.');
-            }
-
-            req.session.userId = userId;
-            req.session.sessionId = sessionResult.insertId;
-            res.redirect('/intro_task1');
-        });
-    });
-});
-
-
-
-
-
-
-
-
+app.use('/intro_nudging1', (req, res, next) => {
+    const nowyCzas = getRandomTime();
+    req.session.maxCzas = nowyCzas;
+    console.log('[app.js] Wchodzę na /intro_nudging1, wylosowany =', nowyCzas);
+    next();
+  }, introNudging1Router);
+app.use('/nudging1', checkSession, nudging1Routes);
 
 
 // Jeśli użytkownik wchodzi na /intro_task1, 
@@ -197,8 +100,8 @@ app.use('/intro_task1', (req, res, next) => {
     console.log('[app.js] Wchodzę na /intro_task1, wylosowany =', nowyCzas);
     next();
   }, introTask1Router);
-  
-app.use('/task1', checkSession, checkTaskProgress, task1Routes);
+//app.use('/task1', checkSession, checkTaskProgress, task1Routes);
+app.use('/task1', checkSession, task1Routes);
 
 
 
@@ -211,10 +114,20 @@ app.use('/intro_task2', (req, res, next) => {
     console.log('[app.js] Wchodzę na /intro_task2, wylosowany =', nowyCzas);
     next();
   }, introTask2Router);
-  
-// Task2
-app.use('/task2', checkSession, checkTaskProgress, task2Routes);
+ 
+//app.use('/task2', checkSession, checkTaskProgress, task2Routes);
+app.use('/task2', checkSession, task2Routes);
 
+
+
+
+app.use('/intro_nudging2', (req, res, next) => {
+  const nowyCzas = getRandomTime();
+  req.session.maxCzas = nowyCzas;
+  console.log('[app.js] Wchodzę na /intro_nudging2, wylosowany =', nowyCzas);
+  next();
+}, introNudging2Router);
+app.use('/nudging2', checkSession, nudging2Routes);
 
 
 
@@ -227,9 +140,8 @@ app.use('/intro_task3', (req, res, next) => {
     next();
   }, introTask3Router);
 
-// Task3
-app.use('/task3', checkSession, checkTaskProgress, task3Routes);
-
+// Task3;
+app.use('/task3', checkSession,  task3Routes);
 
 
 
@@ -241,9 +153,8 @@ app.use('/intro_task4', (req, res, next) => {
     console.log('[app.js] Wchodzę na /intro_task4, wylosowany =', nowyCzas);
     next();
   }, introTask4Router);
-
 //zadanie4
-app.use('/task4', checkSession, checkTaskProgress, task4Routes);
+app.use('/task4', checkSession,task4Routes);
 
 
 // Intro do Task5
@@ -254,10 +165,7 @@ app.use('/intro_task5', (req, res, next) => {
     console.log('[app.js] Wchodzę na /intro_task5, wylosowany =', nowyCzas);
     next();
   }, introTask5Router);
-
-//zadanie5
-app.use('/task5', checkSession, checkTaskProgress, task5Routes);
-
+app.use('/task5', checkSession,  task5Routes);
 
 
 
@@ -270,8 +178,17 @@ app.use('/intro_task6', (req, res, next) => {
     console.log('[app.js] Wchodzę na /intro_task6, wylosowany =', nowyCzas);
     next();
   }, introTask6Router);
-//zadanie6
-app.use('/task6', checkSession, checkTaskProgress, task6Routes);
+app.use('/task6', checkSession, task6Routes)
+
+
+
+app.use('/intro_nudging3', (req, res, next) => {
+  const nowyCzas = getRandomTime();
+  req.session.maxCzas = nowyCzas;
+  console.log('[app.js] Wchodzę na /intro_nudging3, wylosowany =', nowyCzas);
+  next();
+}, introNudging3Router);
+app.use('/nudging3', checkSession, nudging3Routes);
 
 
 // Intro do Task7
@@ -283,9 +200,7 @@ app.use('/intro_task7', (req, res, next) => {
     console.log('[app.js] Wchodzę na /intro_task7, wylosowany =', nowyCzas);
     next();
   }, introTask7Router);
-//zadanie7
-  app.use('/task7', checkSession, checkTaskProgress, task7Routes);
-  
+app.use('/task7', checkSession, task7Routes);
 
 
 
@@ -298,15 +213,12 @@ app.use('/intro_task8', (req, res, next) => {
     console.log('[app.js] Wchodzę na /intro_task8, wylosowany =', nowyCzas);
     next();
   }, introTask8Router);
-//zadanie8
-app.use('/task8', checkSession, checkTaskProgress, task8Routes);
-
-
+app.use('/task8', checkSession, task8Routes);
 
 
 //Outro- koniec
-app.use('/outro', checkSession, checkTaskProgress, outroRouter);
-  
+//app.use('/outro', checkSession, checkTaskProgress, outroRouter);
+app.use('/outro', checkSession, outroRouter);
 
 // Uruchomienie serwera
 app.listen(PORT, () => {

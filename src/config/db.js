@@ -6,7 +6,8 @@ const db = mysql.createConnection({
     user: 'avnadmin',       // Użytkownik bazy danych
     password: 'AVNS_34h6TpaM6F3gmgfI8D1',       // Hasło bazy danych
     database: 'defaultdb' ,// Nazwa bazy danych
-    port: 10947 
+    port: 10947 ,
+    timezone: 'Europe/Warsaw' // Dodaj strefę czasową
 });
 
 

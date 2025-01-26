@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zadanie 3: Misdirections</title>
+    <title>Zadanie 1: Kolory</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+        
             display: flex;
             justify-content: center;
             align-items: center;
@@ -27,52 +27,31 @@
             width: 100%;
         }
 
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #28a745;
-        }
-
-        .arrow-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 20px 0;
-        }
-
-        .arrow {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px 20px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 5px;
-            text-decoration: none;
+        .btn-green {
+            background-color: #28a745;
             color: white;
             width: 300px;
-            transition: opacity 0.3s ease;
-            flex-direction: column;
-            text-align: center;
+            height: 100px;
+            font-size: 20px;
+            margin-right: 10px; /* Odstęp między przyciskami */
         }
 
-        .arrow-green {
-            background-color: #28a745;
-            clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%);
+        .btn-red {
+            background-color: #dc3545;
+            color: white;
+            width: 300px;
+            height: 100px;
+            font-size: 20px;
+            margin-left: 10px; /* Odstęp między przyciskami */
         }
 
-        .arrow-gray {
-            background-color: #6c757d;
-            clip-path: polygon(90% 0, 10% 0, 0 50%, 10% 100%, 90% 100%);
-        }
-
-        .arrow:hover {
+        .btn-green:hover, .btn-red:hover {
             opacity: 0.8;
         }
 
         .progress {
-            height: 25px;
-            border-radius: 50px;
+            height: 20px;
+            border-radius: 10px;
             overflow: hidden;
             margin-top: 20px;
         }
@@ -83,49 +62,48 @@
             height: 100%;
             transition: width 0.1s linear;
         }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-<% if (completedTasks && completedTasks.includes('task3')) { %>
+
+    <% if (completedTasks && completedTasks.includes('nudging3')) { %>
         <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
             <a href="/register">strony rejestracji</a>.
         </p>
-    <% } 
-    else { %>
-    <div class="task-container">
-        <h1>Przejdź do płatności</h1>
-
-        <form action="/task3" method="POST" id="task3-form"> <!-- Dodano id -->
-            <div class="arrow-container">
-                <button type="submit" name="choice" value="without_insurance" class="arrow arrow-gray">
-                    <div class="arrow-text-wrap">
-                        <span class="arrow-main">Kontynuuj</span>
-                        <span class="arrow-sub">bez ubezpieczenia</span>
-                    </div>
-                </button>
-
-                <button type="submit" name="choice" value="with_insurance" class="arrow arrow-green">
-                    <div class="arrow-text-wrap">
-                        <span class="arrow-main">Kontynuuj</span>
-                        <span class="arrow-sub">z ubezpieczeniem</span>
-                    </div>
-                </button>
-                <input type="hidden" name="timeout" id="timeout" value="false">
-                <input type="hidden" name="taskToken" value="<%= taskToken %>">
+      <% } 
+      else { %>
+        <div class="task-container">
+          <h1 class="mb-4">Sfinalizuj płatność</h1>
+          <form action="/nudging3" method="POST" id="nudging3-form">
+            <div class="button-container">
+              <button type="submit" name="choice" value="green" class="btn btn-green">
+                Sfinalizuj płatność<br><small>Przelej swoje środki</small>
+              </button>
+              <button type="submit" name="choice" value="red" class="btn btn-red">
+                Anuluj operację<br><small>Cofnij do aplikacji</small>
+              </button>
             </div>
-        </form>
-        <!-- Pasek ładowania -->
-        <div class="progress">
+            <input type="hidden" name="taskToken" value="<%= taskToken %>">
+            <input type="hidden" name="timeout" id="timeout" value="false">
+          </form>
+          <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
+          </div>
         </div>
-    </div>
-    <% } %>
+      <% } %>
 
+    <!-- JavaScript do obsługi paska postępu -->
     <script>
-        // Pobranie wartości czasu wylosowanego w backendzie
+         // Pobranie wartości czasu wylosowanego w backendzie
         const taskDuration = <%= wylosowanyCzas %> * 1000; // Przeliczamy na milisekundy
         const progressBar = document.getElementById('progress-bar');
-        const form = document.getElementById('task3-form'); // Poprawiono ID formularza
+        const form = document.getElementById('nudging3-form');
         const timeoutInput = document.getElementById('timeout');
 
         function startProgressBar(duration) {
@@ -151,6 +129,26 @@
 
         // Uruchomienie paska postępu
         startProgressBar(taskDuration);
+
+
+
+
+        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
+    window.onpopstate = function () {
+        alert("Nie możesz wrócić do poprzedniej strony. Przekierowanie do strony głównej.");
+        window.location.href = "/register";  // Przekierowanie lub inna strona zabezpieczająca
+    };
+    // Zapobiegaj zapisywaniu tej strony w historii
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, location.href);
+    });
+
+
+    
     </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
