@@ -227,6 +227,8 @@ app.use('/feedback', checkSession, feedbackRoutes);
 app.use('/outro', checkSession, outroRouter);
 
 // Uruchomienie serwera
-app.listen(PORT, () => {
-  console.log('Serwer działa na http://localhost:${PORT}');
+const HOST = '0.0.0.0'; // Nasłuchiwanie na wszystkich interfejsach
+
+app.listen(PORT, HOST, () => {
+  console.log(`Serwer działa na http://${HOST}:${PORT}`);
 });
