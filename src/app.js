@@ -30,6 +30,8 @@ const task6Routes = require('./routes/task6');
 const task7Routes = require('./routes/task7');
 const task8Routes = require('./routes/task8');
 
+
+const feedbackRoutes = require('./routes/feedback');
 const outroRouter = require('./routes/outro');
 
 const app = express();
@@ -154,7 +156,7 @@ app.use('/intro_task4', (req, res, next) => {
     next();
   }, introTask4Router);
 //zadanie4
-app.use('/task4', checkSession,task4Routes);
+app.use('/task4',task4Routes);
 
 
 // Intro do Task5
@@ -202,8 +204,6 @@ app.use('/intro_task7', (req, res, next) => {
   }, introTask7Router);
 app.use('/task7', checkSession, task7Routes);
 
-
-
 // Intro do Task8
 //Socialproof
 //na stałe 30sek
@@ -216,11 +216,17 @@ app.use('/intro_task8', (req, res, next) => {
 app.use('/task8', checkSession, task8Routes);
 
 
+
+app.use('/feedback', checkSession, feedbackRoutes);
+
+//
+
+
 //Outro- koniec
 //app.use('/outro', checkSession, checkTaskProgress, outroRouter);
 app.use('/outro', checkSession, outroRouter);
 
 // Uruchomienie serwera
 app.listen(PORT, () => {
-    console.log(`Serwer działa na http://localhost:${PORT}`);
+  console.log('Serwer działa na http://localhost:${PORT}');
 });

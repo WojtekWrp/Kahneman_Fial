@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #bac1c7;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -74,26 +74,26 @@
       else { %> 
     <div class="task-container">
         <h1>Zakupy</h1>
-        
+        <img src="/smartphone.png" alt="shop" width="100" height="100" class="smartphone-icon">
         <form action="/task7" method="POST" id="task7-form">
             <!-- Smartfon domyślnie zaznaczony --> 
             <label>
                 <input type="checkbox" name="smartfon" value="smartfon" checked>
-                Smartfon (3050 zł)
+                📱Smartfon (3050 zł)
             </label>
             <br>
             
             <!-- Ubezpieczenie - 50 zł -->
             <label>
                 <input type="checkbox" name="ubezpieczenie" value="True">
-                Ubezpieczenie (50 zł)
+                🧑‍⚕️ Ubezpieczenie (50 zł)
             </label>
 
             <!-- W zależności od wersji (negative/positive) zmieniamy kolor i tekst -->
             <% if (wersja === 'negative') { %>
                 <p class="highlight-red">Na pewno chcesz ryzykować stłuczonym ekranem?</p>
             <% } else { %>
-                <p class="highlight-green">Klikając, zabezpieczasz się na przyszłość :)</p>
+                <p class="highlight-green">Klikając, stłuczony ekran Ci nie straszny</p>
             <% } %>
 
             <button type="submit" class="submit-btn">Przejdź do zakupu</button>

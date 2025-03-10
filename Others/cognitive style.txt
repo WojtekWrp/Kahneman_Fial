@@ -1,0 +1,65 @@
+<div class="cognitive-test">
+    <h2>Test na styl poznawczy Gregorca</h2>
+    <form id="gregorc-test-form">
+        <p>1. Jak najlepiej się uczysz?</p>
+        <label><input type="radio" name="q1" value="CS"> Poprzez szczegóły i przykłady</label><br>
+        <label><input type="radio" name="q1" value="AS"> Czytając i analizując teorie</label><br>
+        <label><input type="radio" name="q1" value="CR"> Przez praktyczne działanie</label><br>
+        <label><input type="radio" name="q1" value="AR"> Poprzez rozmowy i wizje</label><br>
+
+        <p>2. Jak podchodzisz do nowych problemów?</p>
+        <label><input type="radio" name="q2" value="CS"> Metodycznie i krok po kroku</label><br>
+        <label><input type="radio" name="q2" value="AS"> Analizując różne opcje</label><br>
+        <label><input type="radio" name="q2" value="CR"> Eksperymentując</label><br>
+        <label><input type="radio" name="q2" value="AR"> Słuchając intuicji</label><br>
+
+        <p>3. Jak wolisz planować swój czas?</p>
+        <label><input type="radio" name="q3" value="CS"> Ścisły plan i harmonogram</label><br>
+        <label><input type="radio" name="q3" value="AS"> Przemyślany, ale elastyczny plan</label><br>
+        <label><input type="radio" name="q3" value="CR"> Robię to w biegu</label><br>
+        <label><input type="radio" name="q3" value="AR"> Zależnie od nastroju</label><br>
+
+        <p>4. Jak radzisz sobie w grupie?</p>
+        <label><input type="radio" name="q4" value="CS"> Lubię jasno określone zadania</label><br>
+        <label><input type="radio" name="q4" value="AS"> Wolę pracować indywidualnie</label><br>
+        <label><input type="radio" name="q4" value="CR"> Lubię dynamiczne środowisko</label><br>
+        <label><input type="radio" name="q4" value="AR"> Cenię relacje i kreatywność</label><br>
+
+        <button type="button" onclick="calculateGregorc()">Zobacz wynik</button>
+    </form>
+    <p id="gregorc-result"></p>
+</div>
+
+<script>
+function calculateGregorc() {
+    let answers = {
+        CS: 0, // Konkretny-sekwencyjny
+        AS: 0, // Abstrakcyjny-sekwencyjny
+        CR: 0, // Konkretny-losowy
+        AR: 0  // Abstrakcyjny-losowy
+    };
+
+    let form = document.getElementById("gregorc-test-form");
+    let selectedAnswers = form.querySelectorAll("input[type='radio']:checked");
+
+    if (selectedAnswers.length < 4) {
+        document.getElementById("gregorc-result").innerText = "Odpowiedz na wszystkie pytania!";
+        return;
+    }
+
+    selectedAnswers.forEach(answer => {
+        answers[answer.value]++;
+    });
+
+    let maxStyle = Object.keys(answers).reduce((a, b) => answers[a] > answers[b] ? a : b);
+    
+    let resultText = {
+        CS: "Jesteś KONKRETNO-SEKWENCYJNY! 📊 Lubisz struktury, plany i jasne reguły.",
+        AS: "Jesteś ABSTRAKCYJNO-SEKWENCYJNY! 🧐 Myślisz analitycznie i logicznie.",
+        CR: "Jesteś KONKRETNO-LOSOWY! ⚡ Lubisz działać i eksperymentować.",
+        AR: "Jesteś ABSTRAKCYJNO-LOSOWY! 🎨 Masz dużą intuicję i jesteś kreatywny."
+    };
+
+    document.getElementById("gregorc-result").innerText = resultText[maxStyle];
+}
+</script>

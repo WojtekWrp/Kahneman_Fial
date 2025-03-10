@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #FF9933;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -45,9 +45,21 @@
             margin-left: 10px; /* Odstęp między przyciskami */
         }
 
-        .btn-green:hover, .btn-red:hover {
+
+
+        .btn-green:hover{
             opacity: 0.8;
+            background-color: #1e8737;
+            color: white;
         }
+        
+        .btn-red:hover {
+            opacity: 0.8;
+            background-color: #811923;
+            color: white;
+        }
+
+
 
         .progress {
             height: 20px;
@@ -68,6 +80,10 @@
             justify-content: center;
             margin-top: 20px;
         }
+        .pizza-icon {
+        display: block;
+        margin: 0 auto 20px;}
+        
     </style>
 </head>
 <body>
@@ -79,6 +95,7 @@
       <% } 
       else { %>
         <div class="task-container">
+            <img src="/pizza.png" alt="pizza" width="100" height="100" class="pizza-icon">
           <h1 class="mb-4">Wybierz najkorzystniejszą dla siebie opcję</h1>
           <form action="/task1" method="POST" id="task1-form">
             <div class="button-container">

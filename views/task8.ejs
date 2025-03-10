@@ -2,11 +2,11 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Zadanie 8 - Hotel</title>
+    <title>Zadanie 8 - Mecz</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #fef102; /* Kolor Borussii Dortmund */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,27 +16,26 @@
         }
         .task-container {
             text-align: center;
-            background: white;
+            background: black;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             max-width: 600px;
             width: 100%;
+            color: #fef102;
         }
         h1 {
             font-size: 24px;
             margin-bottom: 20px;
         }
 
-        /* Kontener w jednej linii z lewostronnym wyrównaniem */
         .checkbox-line {
-            display: flex;            /* włączamy flexbox */
-            align-items: center;      /* wyśrodkowanie pionowe */
-            justify-content: flex-start; /* wyrównanie do lewej */
-            margin: 8px 0;           /* odstęp między liniami */
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin: 8px 0;
         }
 
-        /* Styl do czerwonego napisu, jeśli isTricked === true */
         .highlight {
             color: red;
             font-weight: bold;
@@ -45,9 +44,9 @@
         }
 
         .submit-btn {
-            background-color: #007bff;
+            background-color: #fef102;
             border: none;
-            color: #fff;
+            color: black;
             padding: 10px 20px;
             font-weight: bold;
             border-radius: 5px;
@@ -62,16 +61,19 @@
             border-radius: 10px;
             overflow: hidden;
             margin-top: 20px;
+            background-color: #222;
         }
 
         .progress-bar {
-            background-color: #007bff;
+            background-color: #fef102;
             width: 0%;
             height: 100%;
             transition: width 0.1s linear;
         }
-
-
+        .football-icon {
+            display: block;
+            margin: 0 auto 20px;
+        }
     </style>
 </head>
 <body>
@@ -80,31 +82,29 @@
         <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
             <a href="/register">strony rejestracji</a>.
         </p>
-      <% } 
-     else { %>
+      <% } else { %>
     <div class="task-container">
-        <h1>Hotel</h1>
+
+        <img src="/football.png" alt="Borussia Dortmund" width="100" height="100" class="football-icon">
+        <h1>Mecz Twojego klubu</h1>
         <p>Dokończ płatność, wybierając odpowiednie dla Ciebie opcje!</p>
 
         <form action="/task8" method="POST" id="task8-form">
-            <!-- 1) Wersja – Hotel (domyślnie zaznaczony) -->
             <div class="checkbox-line">
-                <input type="checkbox" name="Hotel" value="hotel" checked />
-                <label style="margin-left: 6px;">Hotel (1050 zł)</label>
+                <input type="checkbox" name="Mecz" value="mecz" checked />
+                <label style="margin-left: 6px;">🎫Bilety (1050 zł)</label>
             </div>
 
-            <!-- 2) Wersja – Śniadanie (z ewentualnym tekstem, jeśli isTricked) -->
             <div class="checkbox-line">
-                <input type="checkbox" name="sniadanie" value="True" />
+                <input type="checkbox" name="koszulka" value="True" />
                 <label style="margin-left: 6px;">
-                    Śniadanie (50 zł)
+                    👕Koszulka (350 zł)
                     <% if (isTricked) { %>
                         <span class="highlight">10 tysięcy użytkowników wybrało tę opcję!</span>
                     <% } %>
                 </label>
             </div>
 
-            <!-- (opcjonalny) Timer -->
             <div id="timer" class="timer-text" style="display: none; font-weight: bold; color: red; margin-top: 10px;">
                 Pozostało 30 sekund na skorzystanie z oferty!
             </div>
@@ -113,38 +113,35 @@
             <input type="hidden" name="timeout" id="timeout" value="false">
             <input type="hidden" name="taskToken" value="<%= taskToken %>">
         </form>
-         <!-- Pasek postępu -->
-         <div class="progress">
+
+        <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
     </div>
     <% } %>
 
     <script>
-         // Pobranie wartości czasu wylosowanego w backendzie
-         const taskDuration = 30000; // Przeliczamy na milisekundy
+         const taskDuration = 30000;
     
-    const progressBar = document.getElementById('progress-bar');
+        const progressBar = document.getElementById('progress-bar');
 
-    function startProgressBar(duration) {
-        const interval = 50; // Odświeżanie co 50ms
-        const step = 100 / (duration / interval); // Obliczenie kroku
-        let progress = 0;
+        function startProgressBar(duration) {
+            const interval = 50;
+            const step = 100 / (duration / interval);
+            let progress = 0;
 
-        const timer = setInterval(() => {
-            progress += step;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(timer);
-                document.getElementById('task8-form').submit(); // Automatyczne przesłanie formularza
-            }
-            progressBar.style.width = `${progress}%`;
-        }, interval);
-    }
-    // Uruchomienie paska postępu
-    startProgressBar(taskDuration);
+            const timer = setInterval(() => {
+                progress += step;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(timer);
+                    document.getElementById('task8-form').submit();
+                }
+                progressBar.style.width = `${progress}%`;
+            }, interval);
+        }
 
-        
+        startProgressBar(taskDuration);
     </script>
 </body>
 </html>

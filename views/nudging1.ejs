@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #FF6666;
             height: 100vh; /* Wysokość widoku */
             display: flex;
             justify-content: center;
@@ -27,7 +27,7 @@
         }
 
         .btn-prefered {
-            background-color: firebrick;
+            background-color: #b22222;
             color: white;
             font-size: 18px;
             padding: 15px 30px;
@@ -50,6 +50,8 @@
 
         .btn:hover {
             opacity: 0.8;
+            background-color: #870e0e;
+            color: white;
         }
 
         .text-muted {
@@ -69,6 +71,10 @@
             height: 100%;
             transition: width 0.1s linear;
         }
+        .logout-icon {
+        display: block;
+        margin: 0 auto 20px;
+}
     </style>
 </head>
 <body>
@@ -79,6 +85,7 @@
     </p>
 <% } else { %>
     <div class="task-container">
+        <img src="/logout.png" alt="Ikona wylogowania" width="128" height="128" class="logout-icon">
         <h1 class="mb-4">Wylogowywanie się</h1>
         <p class="text-muted">Nie chcesz korzystać już z naszej strony?</p>
         <form action="/nudging1" method="POST" id="nudging1-form">

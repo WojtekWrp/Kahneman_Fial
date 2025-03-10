@@ -102,13 +102,13 @@ router.post('/', (req, res) => {
     const czasOdKlikniecia = (Date.now() - startTimestamp) / 1000; // sekundy
 
     //Jeżeli użytkownik zaznaczył śniadanie (true)-> Do bazy leci 0, dał się oszukać
-    const sniadanie = req.body.sniadanie; // '5' jeśli zaznaczył, undefined jeśli nie
+    const koszulka = req.body.koszulka; // '5' jeśli zaznaczył, undefined jeśli nie
     let wynik;
     if (timeout) {
       wynik = 0; // zadanie niewykonane jeżeli timeout
       console.log('Zadanie zakończone przez timeout');
     } else {
-      wynik = (sniadanie === 'True') ? 0 : 1;// Normalne sprawdzenie wyboru'
+      wynik = (koszulka === 'True') ? 0 : 1;// Normalne sprawdzenie wyboru'
       console.log('wynik z else', wynik);
     }
 
@@ -164,7 +164,7 @@ router.post('/', (req, res) => {
     delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
 
     // Po zapisie przekierowujemy np. do /intro_task7
-    res.redirect('/outro');
+    res.redirect('/feedback');
     });
 });
 

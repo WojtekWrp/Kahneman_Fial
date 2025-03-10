@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zadanie 1: Kolory</title>
+    <title>Nudging: Bank</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-        
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
+            background-color: #FF9933;
         }
 
         .task-container {
@@ -27,26 +27,34 @@
             width: 100%;
         }
 
-        .btn-green {
-            background-color: #28a745;
+        .btn-orange {
+            background-color: #FF6200;
             color: white;
             width: 300px;
             height: 100px;
             font-size: 20px;
-            margin-right: 10px; /* Odstęp między przyciskami */
+            margin-right: 10px;
         }
 
-        .btn-red {
-            background-color: #dc3545;
+        .btn-blue {
+            background-color: #003B71;
             color: white;
             width: 300px;
             height: 100px;
             font-size: 20px;
-            margin-left: 10px; /* Odstęp między przyciskami */
+            margin-left: 10px;
         }
 
-        .btn-green:hover, .btn-red:hover {
+        .btn-orange:hover{
             opacity: 0.8;
+            background-color: #e55a03;
+            color: white;
+        }
+                
+        .btn-blue:hover {
+            opacity: 0.8;
+            background-color: #01305c;
+            color: white;
         }
 
         .progress {
@@ -57,7 +65,7 @@
         }
 
         .progress-bar {
-            background-color: #007bff;
+            background-color: #FF6200;
             width: 0%;
             height: 100%;
             transition: width 0.1s linear;
@@ -71,44 +79,41 @@
     </style>
 </head>
 <body>
-
     <% if (completedTasks && completedTasks.includes('nudging3')) { %>
         <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
             <a href="/register">strony rejestracji</a>.
         </p>
-      <% } 
-      else { %>
+    <% } else { %>
         <div class="task-container">
-          <h1 class="mb-4">Sfinalizuj płatność</h1>
-          <form action="/nudging3" method="POST" id="nudging3-form">
-            <div class="button-container">
-              <button type="submit" name="choice" value="green" class="btn btn-green">
-                Sfinalizuj płatność<br><small>Przelej swoje środki</small>
-              </button>
-              <button type="submit" name="choice" value="red" class="btn btn-red">
-                Anuluj operację<br><small>Cofnij do aplikacji</small>
-              </button>
+            <img src="/bank.png" alt="shop" width="100" height="100" class="bank-icon">
+            <h1 class="mb-4" style="color: #003B71;">Sfinalizuj płatność</h1>
+            <form action="/nudging3" method="POST" id="nudging3-form">
+                <div class="button-container">
+                    <button type="submit" name="choice" value="orange" class="btn btn-orange">
+                        Sfinalizuj płatność<br><small>Przelej swoje środki</small>
+                    </button>
+                    <button type="submit" name="choice" value="blue" class="btn btn-blue">
+                        Anuluj operację<br><small>Cofnij do aplikacji</small>
+                    </button>
+                </div>
+                <input type="hidden" name="taskToken" value="<%= taskToken %>">
+                <input type="hidden" name="timeout" id="timeout" value="false">
+            </form>
+            <div class="progress">
+                <div class="progress-bar" id="progress-bar"></div>
             </div>
-            <input type="hidden" name="taskToken" value="<%= taskToken %>">
-            <input type="hidden" name="timeout" id="timeout" value="false">
-          </form>
-          <div class="progress">
-            <div class="progress-bar" id="progress-bar"></div>
-          </div>
         </div>
-      <% } %>
+    <% } %>
 
-    <!-- JavaScript do obsługi paska postępu -->
     <script>
-         // Pobranie wartości czasu wylosowanego w backendzie
-        const taskDuration = <%= wylosowanyCzas %> * 1000; // Przeliczamy na milisekundy
+        const taskDuration = <%= wylosowanyCzas %> * 1000;
         const progressBar = document.getElementById('progress-bar');
         const form = document.getElementById('nudging3-form');
         const timeoutInput = document.getElementById('timeout');
 
         function startProgressBar(duration) {
-            const interval = 50; // Odświeżanie co 50ms
-            const step = 100 / (duration / interval); // Obliczenie kroku
+            const interval = 50;
+            const step = 100 / (duration / interval);
             let progress = 0;
 
             const timer = setInterval(() => {
@@ -116,39 +121,25 @@
                 if (progress >= 100) {
                     progress = 100;
                     clearInterval(timer);
-
-                    // Ustawienie znacznika timeout na true
                     timeoutInput.value = 'true';
-
-                    // Automatyczne przesłanie formularza
                     form.submit();
                 }
                 progressBar.style.width = `${progress}%`;
             }, interval);
         }
 
-        // Uruchomienie paska postępu
         startProgressBar(taskDuration);
 
-
-
-
-        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
-    window.onpopstate = function () {
-        alert("Nie możesz wrócić do poprzedniej strony. Przekierowanie do strony głównej.");
-        window.location.href = "/register";  // Przekierowanie lub inna strona zabezpieczająca
-    };
-    // Zapobiegaj zapisywaniu tej strony w historii
-    history.pushState(null, null, location.href);
-    window.addEventListener('popstate', function () {
+        window.onpopstate = function () {
+            alert("Nie możesz wrócić do poprzedniej strony. Przekierowanie do strony głównej.");
+            window.location.href = "/register";
+        };
         history.pushState(null, null, location.href);
-    });
-
-
-    
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, location.href);
+        });
     </script>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
