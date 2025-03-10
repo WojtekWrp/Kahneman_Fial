@@ -5,7 +5,7 @@ const db = mysql.createConnection({
     host: 'localhost',          // lokalny serwer MySQL
     user: 'advadmin',        // utworzony wcześniej użytkownik
     password: 'AVNS_34h6TpaM6F3gmgfI8D1',    // hasło lokalnego użytkownika
-    database: 'defaultdb',     // nazwa zaimportowanej lokalnej bazy danych
+    database: 'nazwa_bazy',     // nazwa zaimportowanej lokalnej bazy danych
     port: 3306,                 // domyślny port MySQL lokalnie
     timezone: '+01:00'          // poprawny offset czasowy (CET, czas zimowy)
 });
