@@ -227,8 +227,8 @@ app.use('/feedback', checkSession, feedbackRoutes);
 app.use('/outro', checkSession, outroRouter);
 
 // Uruchomienie serwera
-const HOST = '0.0.0.0'; // Nasłuchiwanie na wszystkich interfejsach
+const HOST = '::'; // IPv6 oraz IPv4
 
 app.listen(PORT, HOST, () => {
-  console.log(`Serwer działa na http://${HOST}:${PORT}`);
+  console.log(`Serwer działa na http://[${HOST}]:${PORT}`);
 });
