@@ -61,15 +61,22 @@
     </div>
 
     <script>
+        
         // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
         window.onpopstate = function () {
-            alert("Nie możesz wrócić do poprzedniej strony. Przekierowanie do strony głównej.");
-            window.location.href = "/register";  // Przekierowanie lub inna strona zabezpieczająca
+        const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
+        if (userChoice) {
+        // Użytkownik wybrał "OK" → przekierowanie
+        window.location.href = "/register";
+        } else {
+        // Użytkownik wybrał "Anuluj" → zostaje na stronie i zapobiegamy cofnięciu
+        history.pushState(null, null, location.href);
+        }
         };
         // Zapobiegaj zapisywaniu tej strony w historii
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', function () {
-            history.pushState(null, null, location.href);
+        history.pushState(null, null, location.href);
         });
         
     </script>

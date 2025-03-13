@@ -14,14 +14,12 @@ router.get('/', (req, res) => {
 
     console.log('[GET /task4] Odczytano maxCzas z sesji =', wylosowanyCzas);
 
-   
-   
-   
     // Renderujemy widok 'task4.ejs' z wartością wylosowanyCzas
     res.render('task4', {
     wylosowanyCzas,
     taskToken,
     completedTasks: req.session.completedTasks || [] // Przekazywanie completedTasks do widoku
+    
   });
 
 });

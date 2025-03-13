@@ -74,6 +74,12 @@
     </style>
 </head>
 <body>
+    <% if (completedTasks && completedTasks.includes('task6')) { %>
+        <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
+            <a href="/register">strony rejestracji</a>.
+        </p>
+     <% } 
+     else { %>
     <div class="container">
         <h1>Finalizacja zakupu</h1>
         <form action="/task6" method="POST" id="task6-form">
@@ -99,56 +105,76 @@
         <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
+
     </div>
-    
-    <script>
-        const isTricked = <%= isTricked ? 'true' : 'false' %>;
-        const timerDiv = document.getElementById('timer');
-        const totalPriceElement = document.getElementById('total-price');
-        const giftCheckbox = document.querySelector('input[name="zapakowanie"]');
-        
-        if (isTricked) {
-            timerDiv.style.display = 'block';
-            let remaining = 30;
-            const interval = setInterval(() => {
-                remaining--;
-                if (remaining > 0) {
-                    timerDiv.textContent = `⏳ Pozostało ${remaining} sekund na skorzystanie z oferty!`;
-                } else {
-                    clearInterval(interval);
-                    timerDiv.innerHTML = `<div class='timer-end'>❌ KONIEC PROMOCJI! Cena może wzrosnąć!</div>`;
-                }
-            }, 1000);
-        }
-        
-        giftCheckbox.addEventListener('change', function() {
-            let total = 55;
-            if (this.checked) total += 5;
-            totalPriceElement.textContent = `${total} zł`;
-        });
-        
-        const progressBar = document.getElementById('progress-bar');
-        const form = document.getElementById('task6-form');
-        const timeoutInput = document.getElementById('timeout');
-        
-        function startProgressBar(duration) {
-            const interval = 50;
-            const step = 100 / (duration / interval);
-            let progress = 0;
-            
-            const timer = setInterval(() => {
-                progress += step;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(timer);
-                    timeoutInput.value = 'true';
-                    form.submit();
-                }
-                progressBar.style.width = `${progress}%`;
-            }, interval);
-        }
-        
-        startProgressBar(30000);
-    </script>
+    <% } %>
 </body>
+    <script>
+       window.onpageshow = function(event) {
+        if (event.persisted) { 
+            window.location.reload();
+        }
+    };
+
+    // Pobranie elementów
+    const giftCheckbox = document.querySelector('input[name="zapakowanie"]');
+    const totalPriceElement = document.getElementById('total-price');
+
+    function updateTotalPrice() {
+        let total = 55; // Bazowa cena książki
+        if (giftCheckbox.checked) {
+            total += 5; // Dodajemy 5 zł, jeśli zaznaczono pakowanie
+        }
+        totalPriceElement.textContent = total + " zł"; // Aktualizacja tekstu
+    }
+
+    // Obsługa zmiany checkboxa
+    giftCheckbox.addEventListener('change', updateTotalPrice);
+       window.onpageshow = function(event) {
+        if (event.persisted) { // Jeśli strona wraca z pamięci podręcznej bfcache
+            window.location.reload();
+        }};
+
+    // Zakładamy, że w routes/task7.js robisz coś w stylu:
+    const taskDuration = 30 * 1000; // milisekundy
+    const progressBar = document.getElementById('progress-bar');
+
+    function startProgressBar(duration) {
+        const interval = 50; // co 50ms
+        const step = 100 / (duration / interval);
+        let progress = 0;
+
+        const timer = setInterval(() => {
+            progress += step;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(timer);
+
+                // Automatyczne wysyłanie formularza po zakończeniu paska
+                document.getElementById('task6-form').submit();
+            }
+            progressBar.style.width = `${progress}%`;
+        }, interval);
+    }
+
+    startProgressBar(taskDuration);
+
+     // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
+     window.onpopstate = function () {
+        const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
+        if (userChoice) {
+        // Użytkownik wybrał "OK" → przekierowanie
+        window.location.href = "/register";
+        } else {
+        // Użytkownik wybrał "Anuluj" → zostaje na stronie i zapobiegamy cofnięciu
+        history.pushState(null, null, location.href);
+        }
+        };
+        // Zapobiegaj zapisywaniu tej strony w historii
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', function () {
+        history.pushState(null, null, location.href);
+        });
+    </script>
+
 </html>

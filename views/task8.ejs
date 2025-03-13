@@ -121,8 +121,11 @@
     <% } %>
 
     <script>
-         const taskDuration = 30000;
-    
+        window.onpageshow = function(event) {
+        if (event.persisted) { // Jeśli strona wraca z pamięci podręcznej bfcache
+            window.location.reload(); // Wymusza ponowne załadowanie GET /task1
+        }};
+        const taskDuration = 30000;
         const progressBar = document.getElementById('progress-bar');
 
         function startProgressBar(duration) {
@@ -141,7 +144,23 @@
             }, interval);
         }
 
-        startProgressBar(taskDuration);
+        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
+        window.onpopstate = function () {
+        const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
+        if (userChoice) {
+        // Użytkownik wybrał "OK" → przekierowanie
+        window.location.href = "/register";
+        } else {
+        // Użytkownik wybrał "Anuluj" → zostaje na stronie i zapobiegamy cofnięciu
+        history.pushState(null, null, location.href);
+        }
+        };
+        // Zapobiegaj zapisywaniu tej strony w historii
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', function () {
+        history.pushState(null, null, location.href);
+        });
+        
     </script>
 </body>
 </html>

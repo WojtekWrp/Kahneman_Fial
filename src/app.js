@@ -5,7 +5,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const db = require('./config/db'); // db z /src/config
 const path = require('path');
-
+const rateLimit = require('express-rate-limit');
 const registerRoutes = require('./routes/register');
 
 const introNudging1Router = require('./routes/intro_nudging1');
@@ -31,15 +31,27 @@ const task5Routes = require('./routes/task5');
 const task6Routes = require('./routes/task6');
 const task7Routes = require('./routes/task7');
 const task8Routes = require('./routes/task8');
-
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minut
+  max: 500, // Maksymalnie 100 żądań na IP w 15 minut
+  message: "Zbyt wiele żądań. Spróbuj ponownie później."
+});
 
 const feedbackRoutes = require('./routes/feedback');
 const outroRouter = require('./routes/outro');
 
 const app = express();
 const PORT = 5000;
+app.use(
+  helmet.contentSecurityPolicy({
+      directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
+          styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"]
+      }
+  })
+);
 
-app.use(helmet());
 // Konfiguracja body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -57,11 +69,17 @@ app.set('views', path.join(__dirname, '..', 'views')); //ścieżka do widoków
 
 // Konfiguracja sesji
 app.use(session({
-    secret: 'tajny_klucz',
-    resave: false,
-    saveUninitialized: false
+  secret: process.env.SESSION_SECRET || 'bardzo_tajny_klucz',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+      httpOnly: true, // Zapobiega atakom XSS
+      secure: process.env.NODE_ENV === 'production', // Wymaga HTTPS w produkcji
+      sameSite: 'strict' // Chroni przed CSRF
+  }
 }));
 
+app.use(limiter);
 // Middleware do sprawdzania sesji
 function checkSession(req, res, next) {
     if (!req.session || !req.session.userId) {
@@ -110,7 +128,6 @@ app.use('/task1', checkSession, task1Routes);
 
 
 
-
 // Intro Task2
 app.use('/intro_task2', (req, res, next) => {
     const nowyCzas = getRandomTime();
@@ -121,7 +138,6 @@ app.use('/intro_task2', (req, res, next) => {
  
 //app.use('/task2', checkSession, checkTaskProgress, task2Routes);
 app.use('/task2', checkSession, task2Routes);
-
 
 
 
@@ -205,6 +221,7 @@ app.use('/intro_task7', (req, res, next) => {
     next();
   }, introTask7Router);
 app.use('/task7', checkSession, task7Routes);
+
 
 // Intro do Task8
 //Socialproof

@@ -75,7 +75,6 @@
     </style>
 </head>
 <body>
-
     <% if (completedTasks && completedTasks.includes('task4')) { %>
         <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
             <a href="/register">strony rejestracji</a>.
@@ -132,35 +131,50 @@
 
 
     <script>
-       // Pobranie wartości czasu wylosowanego w backendzie
-       const taskDuration = <%= wylosowanyCzas %> * 1000; // Przeliczamy na milisekundy
-        const progressBar = document.getElementById('progress-bar');
-        const form = document.getElementById('task4-form'); // Poprawiono ID formularza
-        const timeoutInput = document.getElementById('timeout');
-
-        function startProgressBar(duration) {
-            const interval = 50; // Odświeżanie co 50ms
-            const step = 100 / (duration / interval); // Obliczenie kroku
-            let progress = 0;
-
-            const timer = setInterval(() => {
-                progress += step;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(timer);
-
-                    // Ustawienie znacznika timeout na true
-                    timeoutInput.value = 'true';
-
-                    // Automatyczne przesłanie formularza
-                    form.submit();
-                }
-                progressBar.style.width = ${progress}%;
-            }, interval);
+    window.onpageshow = function(event) {
+        if (event.persisted) { 
+            window.location.reload(); 
         }
+    };
 
-        // Uruchomienie paska postępu
-        startProgressBar(taskDuration);
+    // Ustawienie historii strony, aby zapobiec cofaniu
+    history.pushState(null, null, location.href);
+
+    window.addEventListener('popstate', function (event) {
+        const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
+        if (userChoice) {
+            window.location.href = "/register"; // Przekierowanie do rejestracji
+        } else {
+            history.pushState(null, null, location.href); // Blokada cofania
+        }
+    });
+
+    // Pasek postępu
+    const taskDuration = <%= wylosowanyCzas %> * 1000; // Przeliczamy na milisekundy
+    const progressBar = document.getElementById('progress-bar');
+    const form = document.getElementById('task4-form'); 
+    const timeoutInput = document.getElementById('timeout');
+
+    function startProgressBar(duration) {
+        const interval = 50; 
+        const step = 100 / (duration / interval); 
+        let progress = 0;
+
+        const timer = setInterval(() => {
+            progress += step;
+            progressBar.style.width = progress + "%";
+
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(timer);
+                timeoutInput.value = 'true';
+                form.submit();
+            }
+        }, interval);
+    }
+
+    startProgressBar(taskDuration);
+</script>
     </script>
 </body>
 </html>

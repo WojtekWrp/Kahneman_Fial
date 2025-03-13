@@ -77,29 +77,22 @@
     </div>
 
     <script>
-        // Czas trwania ładowania w milisekundach
-        // const loadingDuration = 8000;
-        // const progressBar = document.getElementById('progress-bar');
-
-        // // Funkcja wypełniająca pasek postępu
-        // function startProgressBar(duration) {
-        //     const interval = 50; // Odświeżanie co 50ms
-        //     const step = 100 / (duration / interval); // Obliczenie kroku
-        //     let progress = 0;
-
-        //     const timer = setInterval(() => {
-        //         progress += step;
-        //         if (progress >= 100) {
-        //             progress = 100;
-        //             clearInterval(timer);
-        //             window.location.href = '/task6';
-        //         }
-        //         progressBar.style.width = `${progress}%`;
-        //     }, interval);
-        // }
-
-        // // Uruchom pasek postępu
-        // startProgressBar(loadingDuration);
+        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
+        window.onpopstate = function () {
+        const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
+        if (userChoice) {
+        // Użytkownik wybrał "OK" → przekierowanie
+        window.location.href = "/register";
+        } else {
+        // Użytkownik wybrał "Anuluj" → zostaje na stronie i zapobiegamy cofnięciu
+        history.pushState(null, null, location.href);
+        }
+        };
+        // Zapobiegaj zapisywaniu tej strony w historii
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', function () {
+        history.pushState(null, null, location.href);
+        });
     </script>
 </body>
 </html>

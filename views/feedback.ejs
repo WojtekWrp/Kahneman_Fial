@@ -2,12 +2,9 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Zadanie 4</title>
-    <!-- Jeśli w poprzednich widokach używasz Bootstrapa -->
+    <title>Feedback</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-
-    
         body {
             background-color: #f8f9fa;
             display: flex;
@@ -34,17 +31,6 @@
             font-size: 18px;
             margin-bottom: 16px;
         }
-        table {
-            margin: 0 auto 20px auto;
-            text-align: left;
-            border-collapse: collapse;
-            width: 100%;
-            max-width: 500px;
-        }
-        table td {
-            padding: 8px;
-            vertical-align: middle;
-        }
         .submit-btn {
             background-color: #007bff;
             border: none;
@@ -57,57 +43,71 @@
         .submit-btn:hover {
             opacity: 0.9;
         }
-    
-        .runing-icon {
-        display: block;
-        margin: 0 auto 20px;}
-
-
-
+        .range-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .range-container span {
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 30px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-
+    <% if (completedTasks && completedTasks.includes('feedback')) { %>
+        <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
+            <a href="/register">strony rejestracji</a>.
+        </p>
+     <% } 
+     else { %>
     <div class="task-container">
         <h1>To już koniec badania!</h1>
-        <h3>Dziękujemy za udział w badaniu! Zaraz zostaniesz przekierowany do swojego wyniku
+        <h3>Dziękujemy za udział w badaniu! Zaraz zostaniesz przekierowany do swojego wyniku.
             <br>
             Zanim to nastąpi, prosimy o ocenienie skali podchwytliwości zadań. Jaką trudność w skali od 1 do 10 przysporzyły Ci zadania?
         </h3>
         
         <form id="feedback-form" action="/feedback" method="POST" style="text-align: center;">
             <label for="ocena" style="font-weight: bold;">
-              Wybierz poziom trudności (1 – łatwe, 10 – bardzo trudne):
+              Wybierz poziom trudności:
             </label>
             <br/><br/>
             
-            <!-- Suwak range -->
-            <input
-              type="range"
-              id="ocena"
-              name="ocena"
-              min="1"
-              max="10"
-              value="5"
-              oninput="ocenaOutput.value = this.value"
-              style="width: 300px;"
-            />
-            
-            <br/><br/>
-            
-            <!-- Tutaj przenosimy output pod suwak -->
-            <output
-              id="ocenaOutput"
-              style="font-size: 1.2rem; font-weight: bold;"
-            >
-              5
-            </output>
+            <!-- Suwak z liczbami po bokach -->
+            <div class="range-container">
+                <span>1</span>
+                <input type="range" id="ocena" name="ocena" min="1" max="10" value="5" style="width: 300px;">
+                <span>10</span>
+            </div>
         
             <br/><br/>
         
             <button type="submit" class="submit-btn">OK</button>
-          </form>
-
+        </form>
     </div>
+    <% } %>
 </body>
+    <script>
+    // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
+    window.onpopstate = function () {
+        const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
+        if (userChoice) {
+        // Użytkownik wybrał "OK" → przekierowanie
+        window.location.href = "/register";
+        } else {
+        // Użytkownik wybrał "Anuluj" → zostaje na stronie i zapobiegamy cofnięciu
+        history.pushState(null, null, location.href);
+        }
+        };
+        // Zapobiegaj zapisywaniu tej strony w historii
+        history.pushState(null, null, location.href);
+        window.addEventListener('popstate', function () {
+        history.pushState(null, null, location.href);
+        });
+    </script>
+
 </html>

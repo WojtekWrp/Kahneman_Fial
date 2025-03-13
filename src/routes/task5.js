@@ -19,6 +19,7 @@ router.get('/', (req, res) => {
     wylosowanyCzas,
     taskToken,
     completedTasks: req.session.completedTasks || [] // Przekazywanie completedTasks do widoku
+    
   });
 
 });
