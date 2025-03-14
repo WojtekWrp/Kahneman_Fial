@@ -1,5 +1,3 @@
-const helmet = require('helmet');
-
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -42,15 +40,7 @@ const outroRouter = require('./routes/outro');
 
 const app = express();
 const PORT = 5000;
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      formAction: ["'self'", "https://[2a01:1de:1:1f9:250:56ff:fea9:e82b]:5000"]
-    }
-  })
 
-);
 
 // Konfiguracja body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
