@@ -44,12 +44,12 @@ const app = express();
 const PORT = 5000;
 app.use(
   helmet.contentSecurityPolicy({
-      directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"],
-          styleSrc: ["'self'", "https://cdn.jsdelivr.net", "'unsafe-inline'"]
-      }
+    directives: {
+      defaultSrc: ["'self'"],
+      formAction: ["'self'", "https://[2a01:1de:1:1f9:250:56ff:fea9:e82b]:5000"]
+    }
   })
+
 );
 
 // Konfiguracja body-parser
