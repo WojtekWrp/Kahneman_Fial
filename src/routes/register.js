@@ -17,14 +17,14 @@ router.get('/', (req, res) => {
 
 // POST /register - Obsługa formularza rejestracji
 router.post('/', (req, res) => {
-  const { wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia } = req.body;
+  const { wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia, rodzaj_zawodu } = req.body;
 
   // Dodanie użytkownika do bazy danych
   const sql = `
-    INSERT INTO uzytkownicy (wiek, plec, id_wyksztalcenia, uczelnia, id_rodzaju_wyksztalcenia)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO uzytkownicy (wiek, plec, id_wyksztalcenia, uczelnia, id_rodzaju_wyksztalcenia, id_zawodu)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
-  db.query(sql, [wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia], (err, result) => {
+  db.query(sql, [wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia, rodzaj_zawodu], (err, result) => {
     if (err) {
       console.error('Błąd przy rejestracji:', err.message);
       return res.status(500).send('Wystąpił błąd podczas rejestracji.');
