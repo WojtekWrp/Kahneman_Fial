@@ -6,7 +6,7 @@ const crypto = require('crypto');
 // GET /task2 – wyświetlenie zadania
 router.get('/', (req, res) => {
     // Tutaj już nie losujemy. Odczytujemy wylosowany czas z sesji (ustawiony w app.js)
-    const wylosowanyCzas = req.session.maxCzas || 5; 
+    const wylosowanyCzas = req.session.maxCzas; 
     console.log('[GET /task2] Odczytany maxCzas z sesji =', wylosowanyCzas);
     req.session.taskStart = Date.now();
     // Renderujemy szablon ejs 'task2.ejs' z przekazaną zmienną
@@ -103,6 +103,7 @@ router.post('/', (req, res) => {
     // Oznaczenie zadania jako ukończone
     req.session.completedTasks.push('task2');
     delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu    
+    delete req.session.maxCzas; // <--- czyścimy czas, by nie był używany w kolejnych zadaniach
     res.redirect('/intro_nudging2');// Przekierowanie do intro kolejnego zadania (np. task 3)
     });
 });

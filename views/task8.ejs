@@ -143,6 +143,8 @@
                 progressBar.style.width = `${progress}%`;
             }, interval);
         }
+        startProgressBar(taskDuration);
+
 
         // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
         window.onpopstate = function () {

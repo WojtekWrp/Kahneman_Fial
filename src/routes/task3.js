@@ -6,7 +6,7 @@ const db = require('../config/db'); // Import konfiguracji bazy danych
 // GET /task3 – wyświetlenie zadania
 router.get('/', (req, res) => {
     // Odczytujemy wylosowany czas z sesji (ustawiony w app.js lub w /intro_task3)
-    const wylosowanyCzas = req.session.maxCzas || 5;
+    const wylosowanyCzas = req.session.maxCzas;
     const taskToken = crypto.randomBytes(16).toString('hex');
     req.session.taskToken = taskToken; // Zapisanie tokenu w sesji
 
@@ -58,7 +58,7 @@ router.post('/', (req, res) => {
     const { choice } = req.body;
 
     // Odczytujemy maksymalny czas (wylosowany wcześniej i zapisany w sesji)
-    const maxCzas = req.session.maxCzas || 5;
+    const maxCzas = req.session.maxCzas;
     // Symulacja czasu odpowiedzi (losujemy od 0 do maxCzas)
     
     console.log("czy wysłany po timeoucie?", timeout);
@@ -98,6 +98,7 @@ router.post('/', (req, res) => {
 
            // Oznaczenie zadania jako ukończone
     req.session.completedTasks.push('task3');
+    delete req.session.maxCzas; // <--- czyścimy czas, by nie był używany w kolejnych zadaniach
     delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
    // Przekierowanie do kolejnego intro (np. /intro_task4)
    res.redirect('/intro_task4');

@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
   const taskToken = crypto.randomBytes(16).toString('hex');
   req.session.taskToken = taskToken; // Zapisanie tokenu w sesji
 
-  const wylosowanyCzas = req.session.maxCzas || 5;
+  const wylosowanyCzas = req.session.maxCzas;
   console.log('[GET /task5] Odczytany maxCzas z sesji =', wylosowanyCzas);
 
   res.render('task5', {
@@ -96,6 +96,7 @@ router.post('/', (req, res) => {
   
   // Oznaczenie zadania jako ukończone
   req.session.completedTasks.push('task5');
+  delete req.session.maxCzas; // <--- czyścimy czas, by nie był używany w kolejnych zadaniach
   delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu    
   res.redirect('/intro_task6');
   });

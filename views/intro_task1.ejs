@@ -105,7 +105,12 @@
         // // Uruchom pasek postępu
         // startProgressBar(loadingDuration);
             // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
-            
+          
+        window.onpageshow = function(event) {
+        if (event.persisted) {
+        // Wymuś przeładowanie z serwera
+        location.reload();
+        }};          
        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
        window.onpopstate = function () {
         const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");

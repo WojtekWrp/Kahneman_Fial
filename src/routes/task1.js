@@ -8,7 +8,7 @@ const db = require('../config/db');
 router.get('/', (req, res) => {
   // Ustawiamy w sesji timestamp (w milisekundach od epoki) jako moment startu
   req.session.taskStart = Date.now();
-  const wylosowanyCzas = req.session.maxCzas || 5;
+  const wylosowanyCzas = req.session.maxCzas;
 
   // Generowanie unikalnego tokenu
   const taskToken = crypto.randomBytes(16).toString('hex');
@@ -44,8 +44,6 @@ router.post('/', (req, res) => {
 
 
 
-
-
   // Pobieramy znacznik timeout
   const timeout = req.body.timeout === 'true';
   console.log("czy wysłany po timeoucie?", timeout);
@@ -58,7 +56,7 @@ router.post('/', (req, res) => {
   const czasOdpowiedziRzeczywisty = (now - realStart) / 1000; // sekundy
   const choice = req.body.choice;
 
-  const maxCzas = req.session.maxCzas || 5;
+  const maxCzas = req.session.maxCzas
   const czasOdpowiedzi = czasOdpowiedziRzeczywisty;
 
   // Ustalanie wyniku na podstawie timeout
@@ -83,6 +81,7 @@ router.post('/', (req, res) => {
 
     // Oznaczenie zadania jako ukończone
     req.session.completedTasks.push('task1');
+    delete req.session.maxCzas;
     delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
     res.redirect('/intro_task2');
   });

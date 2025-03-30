@@ -7,7 +7,7 @@ const crypto = require('crypto');
 //  – wyświetlenie zadania
 router.get('/', (req, res) => {
 
-    const wylosowanyCzas = req.session.maxCzas || 5; 
+    const wylosowanyCzas = req.session.maxCzas; 
     console.log('[GET /nudging3] Odczytany maxCzas z sesji =', wylosowanyCzas);
     req.session.taskStart = Date.now();
 
@@ -45,7 +45,8 @@ router.post('/', (req, res) => {
 
   // Oznaczenie zadania jako ukończone
   req.session.completedTasks.push('nudging3');
-  delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu    
+  delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu   
+  delete req.session.maxCzas; // <--- czyścimy czas, by nie był używany w kolejnych zadaniach
   res.redirect('/intro_task7');// Przekierowanie do intro kolejnego zadania- task7
 
   });

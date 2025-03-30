@@ -79,8 +79,16 @@
     </div>
 
     <script>
-      // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
-      window.onpopstate = function () {
+        
+        
+        window.onpageshow = function(event) {
+        if (event.persisted) {
+        // Wymuś przeładowanie z serwera
+        location.reload();
+        }}; 
+        
+        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
+        window.onpopstate = function () {
         const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
         if (userChoice) {
         // Użytkownik wybrał "OK" → przekierowanie

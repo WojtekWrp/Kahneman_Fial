@@ -106,6 +106,7 @@ router.post('/', (req, res) => {
     // Oznaczenie zadania jako ukończone
     req.session.completedTasks.push('task7');
     delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
+    delete req.session.maxCzas; // <--- czyścimy czas, by nie był używany w kolejnych zadaniach
 
     // Po zapisie przekierowujemy np. do /intro_task7
     res.redirect('/intro_task8');

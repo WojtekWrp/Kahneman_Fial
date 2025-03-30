@@ -4,7 +4,7 @@ const router = express.Router();
 // GET /intro_task7
 router.get('/', (req, res) => {
   // Odczytujemy, co wylosował app.js
-  const wylosowanyCzas = req.session.maxCzas || 5; 
+  const wylosowanyCzas = req.session.maxCzas ; 
   console.log('[introTask7Router] wylosowanyCzas =', wylosowanyCzas);
 
   // Renderujemy widok EJS, np. 'intro_task7.ejs'

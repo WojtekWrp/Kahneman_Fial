@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 
     req.session.taskStart = Date.now();
     // Odczytujemy wylosowany czas z sesji (ustawiony wcześniej w app.js lub /intro_task4)
-    const wylosowanyCzas = req.session.maxCzas || 5; 
+    const wylosowanyCzas = req.session.maxCzas; 
     const taskToken = crypto.randomBytes(16).toString('hex');
     req.session.taskToken = taskToken; // // Zapisanie tokenu w sesji
 
@@ -102,6 +102,7 @@ router.post('/', (req, res) => {
 
      // Oznaczenie zadania jako ukończone
     req.session.completedTasks.push('task4');
+    delete req.session.maxCzas; // <--- czyścimy czas, by nie był używany w kolejnych zadaniach
     delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
     // Po zapisie przekierowujemy np. do intro_task5
     res.redirect('/intro_task5');
