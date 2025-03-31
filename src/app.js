@@ -65,14 +65,7 @@ app.use(session({
   }
 }));
 
-app.use(limiter);
-// Middleware do sprawdzania sesji
-function checkSession(req, res, next) {
-    if (!req.session || !req.session.userId) {
-        return res.redirect('/register');
-    }
-    next();
-}
+
 
 function getRandomTime() {
     const mozliweCzasy = [5, 30];
