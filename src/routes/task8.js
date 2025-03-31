@@ -62,6 +62,9 @@ router.post('/', (req, res) => {
   const { taskToken } = req.body; 
   // Walidacja tokenu
   if (taskToken !== req.session.taskToken) {
+    console.log("BODY taskToken:", req.body.taskToken);
+    console.log("SESSION taskToken:", req.session.taskToken);
+    console.log("SESSION ID:", req.sessionID);
     return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
   }
 
