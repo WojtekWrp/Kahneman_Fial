@@ -83,30 +83,7 @@
 
 
     <script>
-        // Czas trwania ładowania w milisekundach
-        const loadingDuration = 8000;
-        const progressBar = document.getElementById('progress-bar');
-
-        // Funkcja wypełniająca pasek postępu
-        function startProgressBar(duration) {
-            const interval = 50; // Odświeżanie co 50ms
-            const step = 100 / (duration / interval); // Obliczenie kroku
-            let progress = 0;
-
-            const timer = setInterval(() => {
-                progress += step;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(timer);
-                    window.location.href = '/task4';
-                }
-                progressBar.style.width = `${progress}%`;
-            }, interval);
-        }
-
-        // Uruchom pasek postępu
-        startProgressBar(loadingDuration);
-
+    
        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
        window.onpopstate = function () {
         const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
