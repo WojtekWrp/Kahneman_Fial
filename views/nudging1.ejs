@@ -128,7 +128,7 @@
             progress += step;
             if (progress >= 100) {
                 progress = 100;
-                learInterval(timer);
+               clearInterval(timer);
 
                 // Ustawienie znacznika timeout na true
                 timeoutInput.value = 'true';
