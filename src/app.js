@@ -29,11 +29,7 @@ const task5Routes = require('./routes/task5');
 const task6Routes = require('./routes/task6');
 const task7Routes = require('./routes/task7');
 const task8Routes = require('./routes/task8');
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minut
-  max: 500, // Maksymalnie 100 żądań na IP w 15 minut
-  message: "Zbyt wiele żądań. Spróbuj ponownie później."
-});
+
 
 const feedbackRoutes = require('./routes/feedback');
 const outroRouter = require('./routes/outro');

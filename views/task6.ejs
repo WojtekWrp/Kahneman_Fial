@@ -91,12 +91,16 @@
                 <input type="checkbox" name="zapakowanie" value="5">
                 🎁 Zapakowanie jako prezent <strong>5 zł</strong>
             </div>
+            <% if (isTricked) { %>
+                <!-- Poniższy timer-text i progress-bar pokazujemy TYLKO, gdy isTricked === true -->
+                <div id="timer" class="timer-text">
+                    ⏳ Pozostało 30 sekund na skorzystanie z opakowania za 5zł!
+                </div>
+            <% } %> 
             <div class="total">Całkowita wartość: <span id="total-price">55 zł</span></div>
             
-            <div id="timer" class="timer-text" style="display: none;">
-                ⏳ Pozostało 30 sekund na skorzystanie z oferty!
-            </div>
             
+           
             <button type="submit" class="btn btn-primary">Przejdź do zakupu</button>
             <input type="hidden" name="timeout" id="timeout" value="false">
             <input type="hidden" name="taskToken" value="<%= taskToken %>">
@@ -118,10 +122,6 @@
     };
 
     // Pobranie elementów
-
-
-
-
 
     const giftCheckbox = document.querySelector('input[name="zapakowanie"]');
     const totalPriceElement = document.getElementById('total-price');
@@ -182,6 +182,29 @@
         window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
         });
+
+
+        // Pobierz zmienną isTricked z serwera (przekazaną w render)
+  const isTricked = <%= isTricked %>; // tu dajemy true/false
+
+// Jeżeli isTricked = true, wykonujemy kod timera
+if (isTricked) {
+  const timerElement = document.getElementById('timer');
+  timerElement.style.display = 'block';
+
+  let timeLeft = 30; // sekund
+  timerElement.textContent = `⏳ Pozostało ${timeLeft} sekund na skorzystanie z opakowania za 5zł!`;
+
+  const countdownInterval = setInterval(() => {
+    timeLeft--;
+    timerElement.textContent = `⏳ Pozostało ${timeLeft} sekund na skorzystanie z opakowania za 5zł!`;
+    
+    if (timeLeft <= 0) {
+      clearInterval(countdownInterval);
+    }
+  }, 1000);
+}
+      
     </script>
 
 </html>
