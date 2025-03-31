@@ -72,12 +72,32 @@ router.post('/', (req, res) => {
   console.log('POST: wynik zadania to', wynik);
 
   // Zapis do bazy
-  const sql = 'INSERT INTO kolory (id_sesji, max_czas, czas_odpowiedzi, wynik) VALUES (?, ?, ?, ?)';
-  db.query(sql, [req.session.sessionId, maxCzas, czasOdpowiedzi, wynik], (err) => {
+  const sql = `
+  INSERT INTO kolory (
+    id_sesji, 
+    max_czas, 
+    czas_odpowiedzi, 
+    wynik,
+    timeout
+  ) 
+  VALUES (?, ?, ?, ?, ?)
+`;
+
+db.query(
+  sql, 
+  [
+    req.session.sessionId, 
+    maxCzas, 
+    czasOdpowiedzi, 
+    wynik,
+    timeout ? 1 : 0 
+  ], 
+  (err) => {
     if (err) {
       console.error('Błąd zapisu w Task1:', err.message);
       return res.status(500).send('Błąd zapisu');
     }
+    
 
     // Oznaczenie zadania jako ukończone
     req.session.completedTasks.push('task1');

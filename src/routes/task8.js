@@ -134,8 +134,8 @@ router.post('/', (req, res) => {
     // Zapis do tabeli timepressing
     // Kolumny: id_sesji, wersja (enum('tricked','normal')), czas_odpowiedzi, wynik
     const sql = `
-      INSERT INTO socialproof (id_sesji, wersja, czas_odpowiedzi, wynik)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO socialproof (id_sesji, wersja, czas_odpowiedzi, wynik, timeout)
+      VALUES (?, ?, ?, ?, ?)
     `;
       db.query(updateSessionSql, [req.session.sessionId], (err) => {
       if (err) {
@@ -150,7 +150,8 @@ router.post('/', (req, res) => {
       req.session.sessionId, // id_sesji
       wersja,                // 'tricked' lub 'normal'
       czasOdKlikniecia,      // float
-      wynik                  // 1 lub 0
+      wynik,      
+      timeout ? 1 : 0                // 1 lub 0
     ], (err) => {
         if (err) {
             console.error('Błąd przy zapisie do timepressing:', err.message);

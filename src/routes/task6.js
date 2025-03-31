@@ -89,15 +89,16 @@ router.post('/', (req, res) => {
 
     // Zapis do tabeli timepressing
     const sql = `
-        INSERT INTO timepressing (id_sesji, wersja, czas_odpowiedzi, wynik)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO timepressing (id_sesji, wersja, czas_odpowiedzi, wynik, timeout)
+        VALUES (?, ?, ?, ?, ?)
     `;
 
     db.query(sql, [
         req.session.sessionId, // id_sesji
         wersja,                // 'tricked' lub 'normal'
         czasOdKlikniecia,      // float
-        wynik                  // 1 lub 0
+        wynik,  // 1 lub 0
+        timeout ? 1 : 0                  
     ], (err) => {
         if (err) {
             console.error('Błąd przy zapisie do timepressing:', err.message);

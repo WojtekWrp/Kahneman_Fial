@@ -121,6 +121,7 @@
     <% } %>
 
     <script>
+        const timeoutInput = document.getElementById('timeout');
         window.onpageshow = function(event) {
         if (event.persisted) { // Jeśli strona wraca z pamięci podręcznej bfcache
             window.location.reload(); // Wymusza ponowne załadowanie GET /task1
@@ -138,6 +139,7 @@
                 if (progress >= 100) {
                     progress = 100;
                     clearInterval(timer);
+                    timeoutInput.value = 'true';
                     document.getElementById('task8-form').submit();
                 }
                 progressBar.style.width = `${progress}%`;

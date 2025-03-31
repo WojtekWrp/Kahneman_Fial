@@ -83,17 +83,18 @@ router.post('/', (req, res) => {
       choice,
       maxCzas,
       czasOdpowiedzi,
-      wynik
+      wynik,
+      timeout
     });
 
     // Dodajemy wynik do tabeli false_hierarchy
     const sql = `
-      INSERT INTO false_hierarchy (id_sesji, max_czas, czas_odpowiedzi, wynik)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO false_hierarchy (id_sesji, max_czas, czas_odpowiedzi, wynik, timeout)
+      VALUES (?, ?, ?, ?, ?)
     `;
 
     console.log('czas odpowiedni wyniosl ',czasOdpowiedzi );
-    db.query(sql, [req.session.sessionId, maxCzas, czasOdpowiedzi, wynik], (err) => {
+    db.query(sql, [req.session.sessionId, maxCzas, czasOdpowiedzi, wynik, timeout ? 1 : 0  ], (err) => {
         if (err) {
             console.error('Błąd przy zapisie wyniku dla zadania 2:', err.message);
             return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');

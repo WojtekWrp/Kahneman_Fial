@@ -110,6 +110,7 @@
     <% } %>
 </body>
     <script>
+        const timeoutInput = document.getElementById('timeout');
        window.onpageshow = function(event) {
         if (event.persisted) { 
             window.location.reload();
@@ -117,6 +118,11 @@
     };
 
     // Pobranie elementów
+
+
+
+
+
     const giftCheckbox = document.querySelector('input[name="zapakowanie"]');
     const totalPriceElement = document.getElementById('total-price');
 
@@ -149,12 +155,13 @@
             if (progress >= 100) {
                 progress = 100;
                 clearInterval(timer);
-
+                timeoutInput.value = 'true';
                 // Automatyczne wysyłanie formularza po zakończeniu paska
                 document.getElementById('task6-form').submit();
             }
             progressBar.style.width = `${progress}%`;
         }, interval);
+
     }
 
     startProgressBar(taskDuration);

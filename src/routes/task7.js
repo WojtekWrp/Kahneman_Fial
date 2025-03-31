@@ -86,14 +86,15 @@ router.post('/', (req, res) => {
     
     // Tutaj możesz zapisać do bazy, np.:
     const sql = `
-    INSERT INTO framing (id_sesji, wersja, czas_odpowiedzi, wynik)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO framing (id_sesji, wersja, czas_odpowiedzi, wynik, timeout)
+    VALUES (?, ?, ?, ?, ?)
   `;
   db.query(sql, [
     req.session.sessionId, // id_sesji
     wersja,                // 'tricked' lub 'normal'
     czasOdpowiedziRzeczywisty,      // float
-    wynik                  // 1 lub 0
+    wynik,                  // 1 lub 0
+    timeout ? 1 : 0    
   ], (err) => {
       if (err) {
           console.error('Błąd przy zapisie do timepressing:', err.message);

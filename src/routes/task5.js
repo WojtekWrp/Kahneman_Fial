@@ -85,10 +85,10 @@ router.post('/', (req, res) => {
   });
 
   const sql = `
-    INSERT INTO preselections (id_sesji, max_czas, czas_odpowiedzi, wynik)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO preselections (id_sesji, max_czas, czas_odpowiedzi, wynik, timeout)
+    VALUES (?, ?, ?, ?, ?)
   `;
-  db.query(sql, [req.session.sessionId, maxCzas, czasOdpowiedziRzeczywisty, wynik], (err) => {
+  db.query(sql, [req.session.sessionId, maxCzas, czasOdpowiedziRzeczywisty, wynik, timeout ? 1 : 0 ], (err) => {
       if (err) {
           console.error('Błąd przy zapisie wyniku dla zadania 5:', err.message);
           return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
