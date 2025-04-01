@@ -1,61 +1,77 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db'); // Import konfiguracji bazy danych
+const db = require('../config/db');
 const crypto = require('crypto');
 
-// GET /nudging3
-//  – wyświetlenie zadania
+// GET /nudging3 – wyświetlenie zadania
 router.get('/', (req, res) => {
+  // 1. Ustawiamy flagę: user odwiedził GET /nudging3
+  req.session.visitedNudging3Get = true;
 
-    const wylosowanyCzas = req.session.maxCzas; 
-    console.log('[GET /nudging3] Odczytany maxCzas z sesji =', wylosowanyCzas);
-    req.session.taskStart = Date.now();
+  // 2. Zaczytujemy maxCzas z sesji
+  const wylosowanyCzas = req.session.maxCzas;
+  console.log('[GET /nudging3] Odczytany maxCzas z sesji =', wylosowanyCzas, ' sessionID=', req.sessionID);
 
-      const taskToken = crypto.randomBytes(16).toString('hex');
-      req.session.taskToken = taskToken;
-      res.render('nudging3', {
-        wylosowanyCzas,
-        taskToken,
-        completedTasks: req.session.completedTasks || [] 
-      });
+  // 3. Ustawiamy czas startu
+  req.session.taskStart = Date.now();
+
+  // 4. Generujemy unikalny token
+  const nudging3Token = crypto.randomBytes(16).toString('hex');
+  req.session.nudging3Token = nudging3Token;
+
+  // 5. Renderujemy widok 'nudging3.ejs'
+  //    W widoku użyj: <input type="hidden" name="nudging3Token" value="<%= nudging3Token %>" />
+  res.render('nudging3', {
+    wylosowanyCzas,
+    nudging3Token,
+    completedTasks: req.session.completedTasks || []
+  });
 });
-
 
 // POST /nudging3 – obsługa formularza
 router.post('/', (req, res) => {
+  // 1. Sprawdź, czy użytkownik odwiedził GET
+  if (!req.session.visitedNudging3Get) {
+    console.log('[POST /nudging3] Nie odwiedził GET, przekierowanie na /nudging3');
+    return res.redirect('/nudging3');
+  }
 
-  const { taskToken } = req.body; 
-  // Walidacja tokenu
-  if (taskToken !== req.session.taskToken) {
-    console.log("BODY taskToken:", req.body.taskToken);
-    console.log("SESSION taskToken:", req.session.taskToken);
-    console.log("SESSION ID:", req.sessionID)
+  // 2. Pobierz token z formularza
+  const { nudging3Token: bodyToken } = req.body;
+  console.log("[POST /nudging3]", {
+    bodyToken,
+    sessionToken: req.session.nudging3Token,
+    sessionID: req.sessionID
+  });
+
+  // 3. Walidacja tokenu
+  if (bodyToken !== req.session.nudging3Token) {
     return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
   }
-  // Ensure `completedTasks` exists as an array
+
+  // 4. Ensure `completedTasks` as array
   req.session.completedTasks = req.session.completedTasks || [];
 
-  // Sprawdzenie, czy zadanie zostało ukończone
+  // 5. Sprawdź, czy zadanie już ukończone
   if (req.session.completedTasks.includes('nudging3')) {
     return res.status(400).send('To zadanie zostało już ukończone.');
   }
 
-  // Zaczytujemy moment startu
-  const startTimestamp = req.session.taskStart;
-  // Jeśli z jakiegoś powodu jest undefined, wstawiamy 0
-  const realStart = startTimestamp || 0;
+  // 6. Zaczytujemy moment startu
+  const startTimestamp = req.session.taskStart || 0;
   const now = Date.now();
 
-  // Oznaczenie zadania jako ukończone
+  // 7. Oznaczamy zadanie jako ukończone
   req.session.completedTasks.push('nudging3');
-  delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu   
-  delete req.session.maxCzas; // <--- czyścimy czas, by nie był używany w kolejnych zadaniach
-  res.redirect('/intro_task7');// Przekierowanie do intro kolejnego zadania- task7
 
-  });
+  // 8. Czyścimy dane
+  delete req.session.visitedNudging3Get;
+  delete req.session.nudging3Token;
+  delete req.session.maxCzas;
+  delete req.session.taskStart;
 
-
-     
-
+  // 9. Przekierowanie do kolejnego zadania (np. /intro_task7)
+  res.redirect('/intro_task7');
+});
 
 module.exports = router;

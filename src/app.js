@@ -61,7 +61,7 @@ app.use(session({
   cookie: {
       httpOnly: true, // Zapobiega atakom XSS
       secure: process.env.NODE_ENV === 'production', // Wymaga HTTPS w produkcji
-      sameSite: 'strict' // Chroni przed CSRF
+      sameSite: 'strict', // Chroni przed CSRF
       maxAge: 1000 * 60 * 30 // 30 minut
   }
 }));
@@ -111,6 +111,8 @@ app.use('/nudging1', checkSession, nudging1Routes);
 
 
 
+
+
 // Jeśli użytkownik wchodzi na /intro_task1, 
 // losujemy nowy czas i zapisujemy do sesji, po czym przekazujemy dalej do routera.
 app.use('/intro_task1', (req, res, next) => {
@@ -143,6 +145,9 @@ app.use('/intro_task2', (req, res, next) => {
  
 //app.use('/task2', checkSession, checkTaskProgress, task2Routes);
 app.use('/task2', checkSession, task2Routes);
+
+
+
 
 
 

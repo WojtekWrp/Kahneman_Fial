@@ -72,20 +72,22 @@
         </h3>
         
         <form id="feedback-form" action="/feedback" method="POST" style="text-align: center;">
+            <!-- Ukryte pole z tokenem -->
+            <input type="hidden" name="feedbackToken" value="<%= feedbackToken %>">
+            
             <label for="ocena" style="font-weight: bold;">
               Wybierz poziom trudności:
             </label>
             <br/><br/>
-            
-            <!-- Suwak z liczbami po bokach -->
+                    
             <div class="range-container">
                 <span>1</span>
                 <input type="range" id="ocena" name="ocena" min="1" max="10" value="5" style="width: 300px;">
                 <span>10</span>
             </div>
-        
+                
             <br/><br/>
-        
+                
             <button type="submit" class="submit-btn">OK</button>
         </form>
     </div>

@@ -1,112 +1,130 @@
 const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db'); // Import konfiguracji bazy danych
+const db = require('../config/db');
 
 // GET /task3 – wyświetlenie zadania
 router.get('/', (req, res) => {
-    // Odczytujemy wylosowany czas z sesji (ustawiony w app.js lub w /intro_task3)
-    const wylosowanyCzas = req.session.maxCzas;
-    const taskToken = crypto.randomBytes(16).toString('hex');
-    req.session.taskToken = taskToken; // Zapisanie tokenu w sesji
+  // 1. Flaga: odwiedzono GET /task3
+  req.session.visitedTask3Get = true;
 
-    console.log('[GET /task3] Odczytany maxCzas z sesji =', wylosowanyCzas);
-    req.session.taskStart = Date.now();
+  // 2. Odczytujemy wylosowany czas z sesji (np. ustawiony w /intro_task3)
+  const wylosowanyCzas = req.session.maxCzas;
+  console.log('[GET /task3]', { wylosowanyCzas, sessionID: req.sessionID });
 
-    // Renderujemy widok 'task3.ejs' i przekazujemy wylosowanyCzas
-    res.render('task3', {
+  // 3. Ustawiamy początek zadania (czas startu)
+  req.session.taskStart = Date.now();
+
+  // 4. Generujemy unikalny token i zapisujemy w sesji
+  const task3Token = crypto.randomBytes(16).toString('hex');
+  req.session.task3Token = task3Token;
+
+  // 5. Renderujemy widok `task3.ejs`
+  res.render('task3', {
     wylosowanyCzas,
-    taskToken,
-    completedTasks: req.session.completedTasks || [] // Przekazywanie completedTasks do widoku
-    });
-    
-
+    task3Token, // <-- to wstaw w <input type="hidden" name="task3Token" value="<%= task3Token %>">
+    completedTasks: req.session.completedTasks || []
+  });
 });
 
 // POST /task3 – obsługa formularza zadania 3
 router.post('/', (req, res) => {
+  // 1. Sprawdź, czy odwiedzono GET
+  if (!req.session.visitedTask3Get) {
+    console.log('[POST /task3] Użytkownik nie przeszedł przez GET /task3');
+    return res.redirect('/task3');
+  }
 
-  const { taskToken } = req.body; 
-  // Walidacja tokenu
-  if (taskToken !== req.session.taskToken) {
-    console.log("BODY taskToken:", req.body.taskToken);
-    console.log("SESSION taskToken:", req.session.taskToken);
-    console.log("SESSION ID:", req.sessionID);
+  // 2. Odczytujemy token z formularza
+  const { task3Token: bodyToken } = req.body;
+  console.log("[POST /task3]", {
+    bodyToken,
+    sessionToken: req.session.task3Token,
+    sessionID: req.sessionID
+  });
+
+  // 3. Walidacja tokenu
+  if (bodyToken !== req.session.task3Token) {
     return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
   }
 
-  // Ensure `completedTasks` exists as an array
+  // Ensure `completedTasks` exists
   req.session.completedTasks = req.session.completedTasks || [];
 
-  // Sprawdzenie, czy zadanie zostało ukończone
+  // 4. Sprawdzenie, czy zadanie zostało ukończone
   if (req.session.completedTasks.includes('task3')) {
     return res.status(400).send('To zadanie zostało już ukończone.');
   }
 
-
-
-
+  // 5. Pobieramy znacznik timeout
   const timeout = req.body.timeout === 'true';
-  // Zaczytujemy moment startu
-  const startTimestamp = req.session.taskStart;
-   // Jeśli z jakiegoś powodu jest undefined, wstawiamy 0
-   const realStart = startTimestamp || 0;
-   const now = Date.now();
- // Różnica w sekundach (lub milisekundach, zależnie co wolisz w bazie)
- const czasOdpowiedziRzeczywisty = (now - realStart) / 1000;  //sekundy
- const czasOdpowiedzi = czasOdpowiedziRzeczywisty;
 
-    
-    // Pobieramy wybór użytkownika
-    const { choice } = req.body;
+  // 6. Odczytujemy moment startu (jeśli brak, bierzemy 0)
+  const startTimestamp = req.session.taskStart || 0;
+  const now = Date.now();
+  const czasOdpowiedziRzeczywisty = (now - startTimestamp) / 1000;
 
-    // Odczytujemy maksymalny czas (wylosowany wcześniej i zapisany w sesji)
-    const maxCzas = req.session.maxCzas;
-    // Symulacja czasu odpowiedzi (losujemy od 0 do maxCzas)
-    
-    console.log("czy wysłany po timeoucie?", timeout);
-    // Interpretacja: jeśli choice === 'without_insurance', wynik = 1, inaczej 0
-    let wynik;
-   if (timeout) {
-     wynik = 0; // zadanie niewykonane jeżeli timeout
-     console.log('Zadanie zakończone przez timeout');
-   } else {
-    wynik = (choice === 'without_insurance') ? 1 : 0; // Normalne sprawdzenie wyboru
-   }
+  // 7. Pobieramy wybór z formularza i maxCzas z sesji
+  const { choice } = req.body;
+  const maxCzas = req.session.maxCzas;
 
-   if (!req.session.quizResults) req.session.quizResults = [];
-    if (!req.session.quizResults.some(result => result.task === 'task3')) {
-        req.session.quizResults.push({ task: 'task3', result: wynik });
+
+
+  
+
+  // 8. Wyliczamy wynik (przykładowa logika)
+  let wynik;
+  if (timeout) {
+    wynik = 0; 
+    console.log('Zadanie zakończone przez timeout');
+  } else {
+    wynik = (choice === 'without_insurance') ? 1 : 0;
+  }
+
+  console.log('[POST /task3] Zapis do bazy:', {
+    choice,
+    maxCzas,
+    czasOdpowiedziRzeczywisty,
+    wynik,
+    timeout
+  });
+  
+  if (!req.session.quizResults) req.session.quizResults = [];
+  if (!req.session.quizResults.some(result => result.task === 'task3')) {
+    req.session.quizResults.push({ task: 'task3', result: wynik });
+  }
+
+
+  // 9. Zapis do tabeli 'misdirections'
+  const sql = `
+    INSERT INTO misdirections (id_sesji, max_czas, czas_odpowiedzi, wynik, timeout)
+    VALUES (?, ?, ?, ?, ?)
+  `;
+
+  db.query(sql, [
+    req.session.sessionId,
+    maxCzas,
+    czasOdpowiedziRzeczywisty,
+    wynik,
+    timeout ? 1 : 0
+  ], (err) => {
+    if (err) {
+      console.error('Błąd przy zapisie wyniku dla zadania 3:', err.message);
+      return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
     }
 
-    console.log('Wyniki quizu z tablicy sesji', req.session.quizResults);
-    console.log('[POST /task3]', {
-      choice,
-      maxCzas,
-      czasOdpowiedzi,
-      wynik
-    });
-
-    // Dodajemy wynik do tabeli 'misdirections'
-    const sql = `
-      INSERT INTO misdirections (id_sesji, max_czas, czas_odpowiedzi, wynik, timeout)
-      VALUES (?, ?, ?, ?, ?)
-    `;
-    console.log('czas odpowiedni wyniosl ',czasOdpowiedzi );
-    db.query(sql, [req.session.sessionId, maxCzas, czasOdpowiedzi, wynik, timeout ? 1 : 0], (err) => {
-        if (err) {
-            console.error('Błąd przy zapisie wyniku dla zadania 3:', err.message);
-            return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
-        }
-
-           // Oznaczenie zadania jako ukończone
+    // 10. Oznaczenie zadania jako ukończone
     req.session.completedTasks.push('task3');
-    delete req.session.maxCzas; // <--- czyścimy czas, by nie był używany w kolejnych zadaniach
-    delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
-   // Przekierowanie do kolejnego intro (np. /intro_task4)
-   res.redirect('/intro_task4');
 
-    });
+    // 11. Czyścimy dane
+    delete req.session.visitedTask3Get;
+    delete req.session.task3Token;
+    delete req.session.maxCzas;
+    delete req.session.taskStart;
+
+    // 12. Przekierowanie do kolejnego intro (np. /intro_task4)
+    res.redirect('/intro_task4');
+  });
 });
 
 module.exports = router;

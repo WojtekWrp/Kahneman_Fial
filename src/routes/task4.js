@@ -1,113 +1,140 @@
 const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db'); // Import konfiguracji bazy danych
+const db = require('../config/db');
 
 // GET /task4 – wyświetlenie zadania
 router.get('/', (req, res) => {
+  // 1. Flaga: odwiedziliśmy GET /task4
+  req.session.visitedTask4Get = true;
 
-    req.session.taskStart = Date.now();
-    // Odczytujemy wylosowany czas z sesji (ustawiony wcześniej w app.js lub /intro_task4)
-    const wylosowanyCzas = req.session.maxCzas; 
-    const taskToken = crypto.randomBytes(16).toString('hex');
-    req.session.taskToken = taskToken; // // Zapisanie tokenu w sesji
+  // 2. Zapisanie startu zadania
+  req.session.taskStart = Date.now();
 
-    console.log('[GET /task4] Odczytano maxCzas z sesji =', wylosowanyCzas);
+  // 3. Odczytujemy maxCzas z sesji (np. ustawiony wcześniej w /intro_task4)
+  const wylosowanyCzas = req.session.maxCzas || 5;
 
-    // Renderujemy widok 'task4.ejs' z wartością wylosowanyCzas
-    res.render('task4', {
+  // 4. Generujemy unikalny token dla task4
+  const task4Token = crypto.randomBytes(16).toString('hex');
+  req.session.task4Token = task4Token;
+
+  console.log('[GET /task4]', {
     wylosowanyCzas,
-    taskToken,
-    completedTasks: req.session.completedTasks || [] // Przekazywanie completedTasks do widoku
-    
+    sessionID: req.sessionID,
+    task4Token
   });
 
+  // 5. Renderujemy widok 'task4.ejs'
+  //    W widoku pamiętaj o <input type="hidden" name="task4Token" value="<%= task4Token %>" />
+  res.render('task4', {
+    wylosowanyCzas,
+    task4Token,
+    completedTasks: req.session.completedTasks || []
+  });
 });
 
 // POST /task4 – zapis wyniku
 router.post('/', (req, res) => {
+  // 1. Sprawdź, czy przeszliśmy przez GET
+  if (!req.session.visitedTask4Get) {
+    console.log('[POST /task4] Użytkownik nie odwiedził GET /task4 → redirect do /task4');
+    return res.redirect('/task4');
+  }
 
-    const { taskToken } = req.body; 
-    // Walidacja tokenu
-    if (taskToken !== req.session.taskToken) {
-    console.log("BODY taskToken:", req.body.taskToken);
-    console.log("SESSION taskToken:", req.session.taskToken);
-    console.log("SESSION ID:", req.sessionID);
-      return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
-    }
+  // 2. Pobierz token z formularza
+  const { task4Token: bodyToken } = req.body;
+  console.log('[POST /task4]', {
+    bodyToken,
+    sessionToken: req.session.task4Token,
+    sessionID: req.sessionID
+  });
+
+  // 3. Walidacja tokenu
+  if (bodyToken !== req.session.task4Token) {
+    return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
+  }
+
+  // 4. Ensure completedTasks jest tablicą
+  req.session.completedTasks = req.session.completedTasks || [];
+
+  // 5. Sprawdzenie, czy zadanie zostało już ukończone
+  if (req.session.completedTasks.includes('task4')) {
+    return res.status(400).send('To zadanie zostało już ukończone.');
+  }
+
+  // 6. Pobieramy znacznik timeout
+  const timeout = req.body.timeout === 'true';
+  console.log("czy wysłany po timeoucie?", timeout);
+
+  // 7. Zaczytujemy moment startu (lub 0)
+  const startTimestamp = req.session.taskStart || 0;
+  const now = Date.now();
+  const czasOdpowiedziRzeczywisty = (now - startTimestamp) / 1000;
+
+  // 8. Pobieramy wartość z formularza (checkbox newsletter?)
+  const newsletter = req.body.newsletter; // '1' jeśli zaznaczone
+  let wynik;
+  if (timeout) {
+    wynik = 0; 
+    console.log('Zadanie zakończone przez timeout');
+  } else {
+    wynik = (newsletter === '1') ? 1 : 0; 
+  }
+
+
   
-    // Ensure `completedTasks` exists as an array
-    req.session.completedTasks = req.session.completedTasks || [];
-  
-    // Sprawdzenie, czy zadanie zostało ukończone
-    if (req.session.completedTasks.includes('task4')) {
-      return res.status(400).send('To zadanie zostało już ukończone.');
+  // 9. Odczytujemy maxCzas
+  const maxCzas = req.session.maxCzas || 5;
+
+  console.log('[POST /task4] Zapis do bazy:', {
+    newsletter,
+    wynik,
+    maxCzas,
+    czasOdpowiedziRzeczywisty,
+    timeout
+  });
+
+
+  if (!req.session.quizResults) req.session.quizResults = [];
+  if (!req.session.quizResults.some(result => result.task === 'task4')) {
+    req.session.quizResults.push({ task: 'task4', result: wynik });
+  }
+
+  // 10. Zapis do bazy (tabela 'questions' w tym przykładzie)
+  const sql = `
+    INSERT INTO questions (
+      id_sesji, 
+      max_czas, 
+      czas_odpowiedzi, 
+      wynik, 
+      timeout
+    )
+    VALUES (?, ?, ?, ?, ?)
+  `;
+  db.query(sql, [
+    req.session.sessionId,
+    maxCzas,
+    czasOdpowiedziRzeczywisty,
+    wynik,
+    timeout ? 1 : 0
+  ], (err) => {
+    if (err) {
+      console.error('Błąd przy zapisie wyniku (task4):', err.message);
+      return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
     }
 
-
-    // Pobieramy znacznik timeout
-    const timeout = req.body.timeout === 'true';  
-    console.log("czy wysłany po timeoucie?", timeout);
-    // Zaczytujemy moment startu
-    const startTimestamp = req.session.taskStart;
-    // Jeśli z jakiegoś powodu jest undefined, wstawiamy 0
-    const realStart = startTimestamp || 0;
-    const now = Date.now();
-     // Różnica w sekundach (lub milisekundach, zależnie co wolisz w bazie)
-    const czasOdpowiedziRzeczywisty = (now - realStart) / 1000;  //sekundy
-    const czasOdpowiedzi = czasOdpowiedziRzeczywisty;
-
-    // Pobieramy wartość z formularza (checkbox).
-    // Jeśli user nie zaznaczył, w ogóle nie pojawi się w req.body (lub będzie pusty).
-    const newsletter = req.body.newsletter;
-    
-    // Zależnie od wartości newsletter, ustawiamy wynik = 1 (zaznaczony) albo 0 (niezaznaczony).
-    let wynik;
-    if (timeout) {
-      wynik = 0; // zadanie niewykonane jeżeli timeout
-      console.log('Zadanie zakończone przez timeout');
-    } else {
-        wynik = (newsletter === '1') ? 1 : 0; // Normalne sprawdzenie wyboru
-    }
-
-    if (!req.session.quizResults) req.session.quizResults = [];
-    if (!req.session.quizResults.some(result => result.task === 'task4')) {
-        req.session.quizResults.push({ task: 'task4', result: wynik });
-    }
-    console.log('Wyniki quizu z tablicy sesji', req.session.quizResults);
-
-
-
-    // Odczytujemy wylosowany maxCzas z sesji
-    const maxCzas = req.session.maxCzas || 5;
-    // Symulacja czasu odpowiedzi
-    
-
-    console.log("[POST /task4]");
-    console.log("newsletter (checkbox):", newsletter);
-    console.log("wynik w bazie:", wynik);
-    console.log("maxCzas z sesji:", maxCzas);
-    console.log("czasOdpowiedzi (symulacja):", czasOdpowiedzi);
-
-    // Zapis do bazy (tabela 'questions' lub 'task4', dostosuj nazwę kolumn)
-    const sql = `
-        INSERT INTO questions (id_sesji, max_czas, czas_odpowiedzi, wynik, timeout)
-        VALUES (?, ?, ?, ?, ?)
-    `;
-    console.log('czas odpowiedni wyniosl ',czasOdpowiedzi );
-    db.query(sql, [req.session.sessionId, maxCzas, czasOdpowiedzi, wynik, timeout ? 1 : 0 ], (err) => {
-        if (err) {
-            console.error('Błąd przy zapisie wyniku (task4):', err.message);
-            return res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
-        }
-
-     // Oznaczenie zadania jako ukończone
+    // 11. Oznaczenie zadania jako ukończone
     req.session.completedTasks.push('task4');
-    delete req.session.maxCzas; // <--- czyścimy czas, by nie był używany w kolejnych zadaniach
-    delete req.session.taskToken; // Usunięcie tokenu po wykorzystaniu
-    // Po zapisie przekierowujemy np. do intro_task5
+
+    // 12. Czyścimy dane
+    delete req.session.visitedTask4Get;
+    delete req.session.task4Token;
+    delete req.session.maxCzas;
+    delete req.session.taskStart;
+
+    // 13. Po zapisie przekierowujemy np. do /intro_task5
     res.redirect('/intro_task5');
-    });
+  });
 });
 
 module.exports = router;
