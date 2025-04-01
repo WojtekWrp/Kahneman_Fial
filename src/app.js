@@ -62,6 +62,7 @@ app.use(session({
       httpOnly: true, // Zapobiega atakom XSS
       secure: process.env.NODE_ENV === 'production', // Wymaga HTTPS w produkcji
       sameSite: 'strict' // Chroni przed CSRF
+      maxAge: 1000 * 60 * 30 // 30 minut
   }
 }));
 
