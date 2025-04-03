@@ -70,7 +70,7 @@
         <p>Zamawiasz pizzę i finalizujesz zamówienie. Wybrałeś już wszystkie interesujące Cię dodatki. Sfinalizuj płatność.</p>
         
         <form action="/intro_task1" method="POST" id="intro_task1-form">
-            <button type="submit" class="submit-btn">Przejdź do zadania</button>
+            <button type="submit" class="submit-btn" id="submit-button">Przejdź do zadania</button>
             
         <!-- <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
@@ -126,6 +126,12 @@
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
+        });
+
+        // Wyłączenie przycisku po pierwszym kliknięciu
+       document.getElementById('intro_task1-form').addEventListener('submit', function() {
+        const submitButton = document.getElementById('submit-button');
+        submitButton.disabled = true; 
         });
         
     </script>

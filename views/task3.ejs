@@ -109,13 +109,13 @@
         <h1>Przejdź do płatności</h1>
         <form action="/task3" method="POST" id="task3-form">
             <div class="arrow-container">
-                <button type="submit" name="choice" value="without_insurance" class="arrow arrow-gray">
+                <button type="submit" id="submit-button1" name="choice" value="without_insurance" class="arrow arrow-gray">
                     <div class="arrow-text-wrap">
                         <span class="arrow-main">Kontynuuj</span><br></br> 
                         <span class="arrow-sub">Słuchaj samej muzyki (40zł)</span>
                     </div>
                 </button>
-                <button type="submit" name="choice" value="with_insurance" class="arrow arrow-green">
+                <button type="submit" id="submit-button2" name="choice" value="with_insurance" class="arrow arrow-green">
                     <div class="arrow-text-wrap">
                         <span class="arrow-main">Kontynuuj</span><br></br> 
                         <span class="arrow-sub">Słuchaj muzyki wraz z podcastami (60zł)</span>
@@ -176,6 +176,15 @@
         history.pushState(null, null, location.href);
         });
         
+
+         // Wyłączenie przycisku po pierwszym kliknięciu
+        document.getElementById('task3-form').addEventListener('submit', function() {
+        const submitButton1 = document.getElementById('submit-button1');
+        submitButton1.disabled = true; 
+        const submitButton2 = document.getElementById('submit-button2');
+        submitButton2.disabled = true;
+        });
+
     </script>
 </body>
 </html>

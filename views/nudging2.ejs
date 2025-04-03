@@ -97,13 +97,13 @@
         <p>Wybierz jedną z opcji, aby zakończyć proces rezerwacji biletów</p>
         <form action="/nudging2" method="POST" id="nudging2-form">
             <div class="arrow-container">
-                <button type="submit" name="choice" value="cancel" class="arrow arrow-red">
+                <button type="submit" id="submit-button1" name="choice" value="cancel" class="arrow arrow-red">
                     <div class="arrow-text-wrap">
                         <span class="arrow-main">Anuluj rezerwację</span>
                     </div>
                 </button>
 
-                <button type="submit" name="choice" value="confirm" class="arrow arrow-gold">
+                <button type="submit" name="choice" id="submit-button2" value="confirm" class="arrow arrow-gold">
                     <div class="arrow-text-wrap">
                         <span class="arrow-main">Potwierdź i zapłać</span>
                     </div>
@@ -160,6 +160,15 @@
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
+        });
+
+
+        // Wyłączenie przycisku po pierwszym kliknięciu
+        document.getElementById('nudging2-form').addEventListener('submit', function() {
+        const submitButton1 = document.getElementById('submit-button1');
+        submitButton1.disabled = true; 
+        const submitButton2 = document.getElementById('submit-button2');
+        submitButton2.disabled = true;
         });
 
     </script>

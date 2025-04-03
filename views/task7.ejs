@@ -98,7 +98,7 @@
                 <p class="highlight-green">Klikając, stłuczony ekran Ci nie straszny</p>
             <% } %>
 
-            <button type="submit" class="submit-btn">Przejdź do zakupu</button>
+            <button type="submit" id="submit-btn" class="submit-btn">Przejdź do zakupu</button>
             <input type="hidden" name="timeout" id="timeout" value="false">
             <input type="hidden" name="task7Token" value="<%= task7Token %>">'
         </div>
@@ -179,6 +179,17 @@
 
     history.pushState(null, null, location.href);
     window.addEventListener('popstate', function () {
-        history.pushState(null, null, location.href);
+    history.pushState(null, null, location.href);
     });
+
+    // Wyłączenie przycisku po pierwszym kliknięciu
+    document.getElementById('task7-form').addEventListener('submit', function() {
+    const submitButton = document.getElementById('submit-btn');
+    submitButton.disabled = true; ;
+    });
+
+
+
+
+
 </script>

@@ -99,12 +99,12 @@
         <h1 class="mb-4">Anulowanie subskrypcji?</h1>
         <p class="text-muted">Możesz stracić dostęp do ekskluzywnych aktualizacji, ofert i promocji. Na pewno chcesz anulować?</p>
         <form action="/task2" method="POST" id="task2-form">
-            <button type="submit" name="choice" value="stay" class="btn btn-prefered">
+            <button type="submit"  id="submit-button1" name="choice" value="stay" class="btn btn-prefered">
                 Nie, chcę pozostać subskrybentem
             </button>
             <input type="hidden" name="task2Token" value="<%= task2Token %>">
             <input type="hidden" name="timeout" id="timeout" value="false"> 
-            <button type="submit" name="choice" value="cancel" class="btn btn-alternative">
+            <button type="submit" id="submit-button2" name="choice" value="cancel" class="btn btn-alternative">
                 Tak, chcę anulować
             </button>
         </form>
@@ -159,6 +159,14 @@
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
+        });
+
+        // Wyłączenie przycisku po pierwszym kliknięciu
+        document.getElementById('task2-form').addEventListener('submit', function() {
+        const submitButton1 = document.getElementById('submit-button1');
+        submitButton1.disabled = true; 
+        const submitButton2 = document.getElementById('submit-button2');
+        submitButton2.disabled = true;
         });
     
 </script>

@@ -56,7 +56,7 @@
         <p>Jesteś w trakcie zakupów biletów do kina. Wybrałeś już wszystkie interesujące Cię opcje.
              Twoim zadaniem będzie przejście do płatności.</p>
         <form action="/intro_nudging2" method="POST" id="intro_nudging2-form">
-            <button type="submit" class="submit-btn">Przejdź do zadania</button>
+            <button type="submit" class="submit-btn" id="submit-button" >Przejdź do zadania</button>
         </form>
     </div>
 
@@ -83,6 +83,12 @@
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
+        });
+
+       // Wyłączenie przycisku po pierwszym kliknięciu
+       document.getElementById('intro_nudging2-form').addEventListener('submit', function() {
+        const submitButton = document.getElementById('submit-button');
+        submitButton.disabled = true; 
         });
         
     </script>

@@ -109,7 +109,7 @@
                 Pozostało 30 sekund na skorzystanie z oferty!
             </div>
 
-            <button type="submit" class="submit-btn">Przejdź do zakupu</button>
+            <button type="submit" id="submit-btn" class="submit-btn">Przejdź do zakupu</button>
             <input type="hidden" name="timeout" id="timeout" value="false">
             <input type="hidden" name="task8Token" value="<%= task8Token %>">
         </form>
@@ -189,6 +189,15 @@
           console.warn("Element o id 'mecz' lub 'tshirt' nie został znaleziony.");
       }
   });
+
+
+
+     // Wyłączenie przycisku po pierwszym kliknięciu
+    document.getElementById('task8-form').addEventListener('submit', function() {
+    const submitButton = document.getElementById('submit-btn');
+    submitButton.disabled = true; ;
+    });
+
     </script>
 </body>
 </html>

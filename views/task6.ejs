@@ -101,7 +101,7 @@
             
             
            
-            <button type="submit" class="btn btn-primary">Przejdź do zakupu</button>
+            <button type="submit" id="submit-btn" class="btn btn-primary">Przejdź do zakupu</button>
             <input type="hidden" name="timeout" id="timeout" value="false">
             <input type="hidden" name="task6Token" value="<%= task6Token %>">
 
@@ -205,7 +205,17 @@ if (isTricked) {
     }
   }, 1000);
 }
-      
+ 
+
+    // Wyłączenie przycisku po pierwszym kliknięciu
+    document.getElementById('task6-form').addEventListener('submit', function() {
+    const submitButton = document.getElementById('submit-btn');
+    submitButton.disabled = true; ;
+    });
+
+
+
+
     </script>
 
 </html>

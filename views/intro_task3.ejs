@@ -70,7 +70,7 @@
         <p>Jesteś w trakcie zakupów usługi streamingowej.
         Jesteś zainteresowany słuchaniem muzyki, bez ponoszenia dodatkowych opłat. Wybierz odpowiednią opcję.</p>
         <form action="/intro_task3" method="POST" id="intro_task3-form">
-            <button type="submit" class="submit-btn">Przejdź do zadania</button>
+            <button type="submit"  id="submit-button" class="submit-btn">Przejdź do zadania</button>
         </form>
         <!-- <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
@@ -103,6 +103,13 @@
         window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
         });
+
+         // Wyłączenie przycisku po pierwszym kliknięciu
+        document.getElementById('intro_task3-form').addEventListener('submit', function() {
+        const submitButton = document.getElementById('submit-button');
+        submitButton.disabled = true; 
+        });
+        
     </script>
 </body>
 </html>

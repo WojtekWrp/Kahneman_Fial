@@ -57,7 +57,7 @@
         <h1>Uwaga! Na zadanie będziesz miał <%= wylosowanyCzas %> sekund.</h1>
         <p>Chcesz wylogować się ze strony. Użyj odpowiedniego przycisku.</p>
         <form action="/intro_nudging1" method="POST" id="intro_nudging1-form">
-            <button type="submit" class="submit-btn">Przejdź do zadania</button>
+            <button type="submit"  id="submit-button" class="submit-btn">Przejdź do zadania</button>
         </form>
     </div>
 
@@ -82,6 +82,12 @@
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
+        });
+
+        // Wyłączenie przycisku po pierwszym kliknięciu
+        document.getElementById('intro_nudging1-form').addEventListener('submit', function() {
+        const submitButton = document.getElementById('submit-button');
+        submitButton.disabled = true; 
         });
         
     </script>

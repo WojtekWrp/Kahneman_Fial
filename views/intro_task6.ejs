@@ -69,7 +69,7 @@
         <h1>Uwaga! Na zadanie będziesz miał <%= wylosowanyCzas %> sekund.</h1>  
         <p>Jesteś w trakcie zakupu książki, która jest przeznaczona na prezent świąteczny. Przejdź do płatności.</p>
         <form action="/intro_task6" method="POST" id="intro_task6-form">
-            <button type="submit" class="submit-btn">Przejdź do zadania</button>
+            <button type="submit" id="submit-button" class="submit-btn">Przejdź do zadania</button>
         </form>
         <!-- <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
@@ -93,6 +93,15 @@
         window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
         });
+
+        // Wyłączenie przycisku po pierwszym kliknięciu
+        document.getElementById('intro_task6-form').addEventListener('submit', function() {
+        const submitButton = document.getElementById('submit-button');
+        submitButton.disabled = true; 
+        });
+
+
+        
     </script>
 </body>
 </html>

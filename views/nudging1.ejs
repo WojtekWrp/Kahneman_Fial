@@ -90,13 +90,13 @@
         <p class="text-muted">Nie chcesz korzystać już z naszej strony?</p>
         <form action="/nudging1" method="POST" id="nudging1-form">
             <!-- Opcja preferowana -->
-            <button type="submit" name="choice" value="stay" class="btn btn-prefered">
+            <button type="submit" id="submit-button1" name="choice" value="stay" class="btn btn-prefered">
                 Tak, chcę się wylogować
             </button>
             <input type="hidden" name="nudging1Token" value="<%= nudging1Token %>">
             <input type="hidden" name="timeout" id="timeout" value="false"> 
             <!-- Opcja alternatywna -->
-            <button type="submit" name="choice" value="cancel" class="btn btn-alternative">
+            <button type="submit" id="submit-button2" name="choice" value="cancel" class="btn btn-alternative">
                 Nie, pozostań na stronie
             </button>
         </form>
@@ -160,6 +160,14 @@
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
+        });
+
+        // Wyłączenie przycisku po pierwszym kliknięciu
+        document.getElementById('nudging1-form').addEventListener('submit', function() {
+        const submitButton1 = document.getElementById('submit-button1');
+        submitButton1.disabled = true; 
+        const submitButton2 = document.getElementById('submit-button2');
+        submitButton2.disabled = true;
         });
 
     
