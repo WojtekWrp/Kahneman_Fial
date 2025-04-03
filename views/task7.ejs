@@ -86,17 +86,19 @@
             <!-- Ubezpieczenie - 50 zł -->
              <!-- Kontener ubezpieczenia - domyślnie ukryty -->
         <div id="insurance-section" style="display: none;">
+            <!-- W zależności od wersji (negative/positive) zmieniamy kolor i tekst -->
+            <% if (wersja === 'negative') { %>
+                <p class="highlight-red">Na pewno chcesz ryzykować stłuczonym ekranem?</p>
+            <% } else { %>
+                <p class="highlight-green">Wybierająć ubezpieczenie, stłuczony ekran Ci nie straszny</p>
+            <% } %>
+            
             <label>
                 <input type="checkbox" name="ubezpieczenie" value="True">
                 🧑‍⚕️ Ubezpieczenie (50 zł)
             </label>
 
-            <!-- W zależności od wersji (negative/positive) zmieniamy kolor i tekst -->
-            <% if (wersja === 'negative') { %>
-                <p class="highlight-red">Na pewno chcesz ryzykować stłuczonym ekranem?</p>
-            <% } else { %>
-                <p class="highlight-green">Klikając, stłuczony ekran Ci nie straszny</p>
-            <% } %>
+            
 
             <button type="submit" id="submit-btn" class="submit-btn">Przejdź do zakupu</button>
             <input type="hidden" name="timeout" id="timeout" value="false">
