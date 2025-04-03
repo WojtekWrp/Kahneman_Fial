@@ -32,6 +32,9 @@ router.get('/', (req, res) => {
 
 // POST /nudging1 – obsługa formularza
 router.post('/', (req, res) => {
+
+ 
+
   // 1. Sprawdzamy, czy odwiedzono GET
   if (!req.session.visitedNudging1Get) {
     console.log('[POST /nudging1] Użytkownik nie przeszedł przez GET /nudging1');

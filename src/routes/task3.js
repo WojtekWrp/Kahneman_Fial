@@ -29,11 +29,17 @@ router.get('/', (req, res) => {
 
 // POST /task3 – obsługa formularza zadania 3
 router.post('/', (req, res) => {
+
+
+
+
+
   // 1. Sprawdź, czy odwiedzono GET
   if (!req.session.visitedTask3Get) {
     console.log('[POST /task3] Użytkownik nie przeszedł przez GET /task3');
     return res.redirect('/task3');
   }
+
 
   // 2. Odczytujemy token z formularza
   const { task3Token: bodyToken } = req.body;
@@ -67,8 +73,6 @@ router.post('/', (req, res) => {
   // 7. Pobieramy wybór z formularza i maxCzas z sesji
   const { choice } = req.body;
   const maxCzas = req.session.maxCzas;
-
-
 
   
 

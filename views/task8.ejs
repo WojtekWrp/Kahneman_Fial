@@ -91,11 +91,11 @@
 
         <form action="/task8" method="POST" id="task8-form">
             <div class="checkbox-line">
-                <input type="checkbox" name="Mecz" value="mecz" checked />
+                <input type="checkbox" id= "mecz" name="Mecz" value="mecz"/>
                 <label style="margin-left: 6px;">🎫Bilety (1050 zł)</label>
             </div>
 
-            <div class="checkbox-line">
+            <div class="checkbox-line" id = "tshirt" style= "display: none">
                 <input type="checkbox" name="koszulka" value="True" />
                 <label style="margin-left: 6px;">
                     👕Koszulka (350 zł)
@@ -165,6 +165,30 @@
         history.pushState(null, null, location.href);
         });
         
+
+        document.addEventListener('DOMContentLoaded', function() {
+      const matchCheckbox = document.getElementById('mecz');
+      const tshirtDiv = document.getElementById('tshirt');
+
+      if (matchCheckbox && tshirtDiv) {
+          function toggleTshirtSection() {
+              // Używamy "flex", aby zachować styl ustawiony dla klasy "checkbox-line"
+              if (matchCheckbox.checked) {
+                  tshirtDiv.style.display = 'flex';
+              } else {
+                  tshirtDiv.style.display = 'none';
+              }
+          }
+
+          // Nasłuchiwanie zmiany stanu checkboxa
+          matchCheckbox.addEventListener('change', toggleTshirtSection);
+
+          // Sprawdzenie stanu przy ładowaniu strony
+          toggleTshirtSection();
+      } else {
+          console.warn("Element o id 'mecz' lub 'tshirt' nie został znaleziony.");
+      }
+  });
     </script>
 </body>
 </html>

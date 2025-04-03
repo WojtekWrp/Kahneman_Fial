@@ -76,14 +76,16 @@
         <h1>Zakupy</h1>
         <img src="/smartphone.png" alt="shop" width="100" height="100" class="smartphone-icon">
         <form action="/task7" method="POST" id="task7-form">
-            <!-- Smartfon domyślnie zaznaczony --> 
+             
             <label>
-                <input type="checkbox" name="smartfon" value="smartfon" checked>
+                <input type="checkbox" id = "smartfon" name="smartfon" value="smartfon">
                 📱Smartfon (3050 zł)
             </label>
             <br>
             
             <!-- Ubezpieczenie - 50 zł -->
+             <!-- Kontener ubezpieczenia - domyślnie ukryty -->
+        <div id="insurance-section" style="display: none;">
             <label>
                 <input type="checkbox" name="ubezpieczenie" value="True">
                 🧑‍⚕️ Ubezpieczenie (50 zł)
@@ -98,7 +100,8 @@
 
             <button type="submit" class="submit-btn">Przejdź do zakupu</button>
             <input type="hidden" name="timeout" id="timeout" value="false">
-            <input type="hidden" name="task7Token" value="<%= task7Token %>">
+            <input type="hidden" name="task7Token" value="<%= task7Token %>">'
+        </div>
         </form>
          <!-- Pasek postępu -->
          <div class="progress">
@@ -112,18 +115,42 @@
 </body>
 </html>
 <script>
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const smartphoneCheckbox = document.getElementById('smartfon');
+        const insuranceSection = document.getElementById('insurance-section');
+
+        // Funkcja do przełączania widoczności sekcji ubezpieczenia
+        function toggleInsuranceSection() {
+            if (smartphoneCheckbox.checked) {
+                insuranceSection.style.display = 'block';
+            } else {
+                insuranceSection.style.display = 'none';
+            }
+        }
+
+        // Nasłuchujemy zmiany stanu checkboxa
+        smartphoneCheckbox.addEventListener('change', toggleInsuranceSection);
+
+        // Opcjonalnie, od razu sprawdzamy stan przy ładowaniu strony
+        toggleInsuranceSection();
+    });
+
+    // Istniejący kod (np. pasek postępu, obsługa popstate) pozostaje bez zmian
     const timeoutInput = document.getElementById('timeout');
     window.onpageshow = function(event) {
-        if (event.persisted) { // Jeśli strona wraca z pamięci podręcznej bfcache
-            window.location.reload(); // Wymusza ponowne załadowanie GET /task1
-        }};
+        if (event.persisted) {
+            window.location.reload();
+        }
+    };
 
-   
-    const taskDuration = 30 * 1000; // milisekundy
+    const taskDuration = 30 * 1000; // 30 sekund
     const progressBar = document.getElementById('progress-bar');
 
     function startProgressBar(duration) {
-        const interval = 50; // co 50ms
+        const interval = 50;
         const step = 100 / (duration / interval);
         let progress = 0;
 
@@ -133,7 +160,6 @@
                 progress = 100;
                 clearInterval(timer);
                 timeoutInput.value = 'true';
-                // Automatyczne wysyłanie formularza po zakończeniu paska
                 document.getElementById('task7-form').submit();
             }
             progressBar.style.width = `${progress}%`;
@@ -141,22 +167,18 @@
     }
 
     startProgressBar(taskDuration);
-       
-    
-    // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
-       window.onpopstate = function () {
+
+    window.onpopstate = function () {
         const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
         if (userChoice) {
-        // Użytkownik wybrał "OK" → przekierowanie
-        window.location.href = "/register";
+            window.location.href = "/register";
         } else {
-        // Użytkownik wybrał "Anuluj" → zostaje na stronie i zapobiegamy cofnięciu
-        history.pushState(null, null, location.href);
+            history.pushState(null, null, location.href);
         }
-        };
-        // Zapobiegaj zapisywaniu tej strony w historii
+    };
+
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
-        window.addEventListener('popstate', function () {
-        history.pushState(null, null, location.href);
-        });
+    });
 </script>

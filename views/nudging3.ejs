@@ -33,7 +33,7 @@
             width: 300px;
             height: 100px;
             font-size: 20px;
-            margin-right: 10px;
+            margin-left: 10px;
         }
 
         .btn-blue {
@@ -89,11 +89,12 @@
             <h1 class="mb-4" style="color: #003B71;">Sfinalizuj płatność</h1>
             <form action="/nudging3" method="POST" id="nudging3-form">
                 <div class="button-container">
-                    <button type="submit" name="choice" value="orange" class="btn btn-orange">
-                        Sfinalizuj płatność<br><small>Przelej swoje środki</small>
-                    </button>
+                    
                     <button type="submit" name="choice" value="blue" class="btn btn-blue">
                         Anuluj operację<br><small>Cofnij do aplikacji</small>
+                    </button>
+                    <button type="submit" name="choice" value="orange" class="btn btn-orange">
+                        Sfinalizuj płatność<br><small>Przelej swoje środki</small>
                     </button>
                 </div>
                 <input type="hidden" name="nudging3Token" value="<%= nudging3Token %>">
