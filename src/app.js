@@ -4,7 +4,9 @@ const bodyParser = require('body-parser');
 const db = require('./config/db'); // db z /src/config
 const path = require('path');
 const rateLimit = require('express-rate-limit');
+
 const registerRoutes = require('./routes/register');
+const gdmsRoutes = require('./routes/gdms');
 
 const introNudging1Router = require('./routes/intro_nudging1');
 const introNudging2Router = require('./routes/intro_nudging2');
@@ -91,6 +93,10 @@ app.get('/', (req, res) => {
   res.redirect('/register'); // Przekierowanie do strony rejestracji
 });
 app.use('/register', registerRoutes);
+
+
+
+app.use('/gdms', checkSession, gdmsRoutes);
 
 
 

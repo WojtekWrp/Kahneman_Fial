@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Podsumowanie Quizu</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
+        html, body {
+    height: auto;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
         .task-container {
             text-align: center;
             background: white;
@@ -51,9 +52,15 @@
             background-color: #ccffcc; /* Zielony dla niezmanipulowanych */
             color: #006600; /* Ciemniejszy tekst dla kontrastu */
         }
+            .wrapper {
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px; /* górny i boczny margines */
+    }
     </style>
 </head>
 <body>
+    <div class="wrapper">
     <div class="task-container">
         <h1>Podsumowanie Quizu</h1>
         <table class="table table-bordered">
@@ -64,6 +71,7 @@
                 </tr>
             </thead>
             <tbody>
+
                 <% quizResults.forEach((result, index) => { %>
                     <tr>
                         <td>Zadanie <%= index + 1 %></td>
@@ -72,10 +80,83 @@
                         </td>
                     </tr>
                 <% }); %>
+
+                
             </tbody>
+
+
         </table>
         <p>Udało Ci się wybronić przed <%= successRate %>% dark patterns.</p>
+
+    <h4 class="mb-3">Jak podejmujesz decyzje? </h4>
+    <canvas id="gdmsRadarChart" width="400" height="400"></canvas>
+
+        <div class="text-start" style="font-size: 0.95rem;">
+        <p><strong>Intuicyjny:</strong> Osoby o tym stylu polegają na wewnętrznych przeczuciach i uczuciach podczas podejmowania decyzji. Ufają swoim instynktom i często kierują się „tym, co czują”.</p>
+
+        <p><strong>Racjonalny:</strong> Decyzje są podejmowane po dokładnej analizie faktów, logicznych przesłanek i systematycznym przemyśleniu. Styl ten charakteryzuje się dążeniem do obiektywności i porządku.</p>
+
+        <p><strong>Zależny:</strong> Ten styl wskazuje na potrzebę wsparcia i opinii innych osób przy podejmowaniu decyzji. Użytkownicy tego stylu często konsultują się z otoczeniem i polegają na wskazówkach innych.</p>
+
+        <p><strong>Natychmiastowy:</strong> Osoby o tym stylu reagują szybko i impulsywnie. Często podejmują decyzje bez wcześniejszego zastanowienia, kierując się tym, co uważają za słuszne w danym momencie.</p>
+
+        <p><strong>Unikający:</strong> Ten styl wiąże się z tendencją do odkładania decyzji lub unikania ich w ogóle, szczególnie w sytuacjach wywołujących stres lub niepewność.</p>
+        </div>
         <p>Dziękujęmy za udział w badaniu! Prosimy o zamknięcie przeglądarki.</p>
     </div>
+</div>
+
 </body>
 </html>
+
+<script>
+    const canvas = document.getElementById('gdmsRadarChart');
+  
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+  
+      const gdmsData = {
+        labels: ['Intuicyjny', 'Racjonalny', 'Zależny', 'Natychmiastowy', 'Unikający'],
+        datasets: [{
+          label: 'Styl podejmowania decyzji',
+          data: [
+            <%= wyniki?.intuitive || 0 %>,
+            <%= wyniki?.rational || 0 %>,
+            <%= wyniki?.dependency || 0 %>,
+            <%= wyniki?.instant || 0 %>,
+            <%= wyniki?.avoidance || 0 %>
+          ],
+          fill: true,
+          backgroundColor: 'rgba(0, 123, 255, 0.2)',
+          borderColor: 'rgba(0, 123, 255, 1)',
+          pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(0, 123, 255, 1)'
+        }]
+      };
+  
+      const config = {
+        type: 'radar',
+        data: gdmsData,
+        options: {
+          responsive: true,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 35,
+              ticks: { stepSize: 5, color: '#333' },
+              pointLabels: { font: { size: 14 } }
+            }
+          },
+          plugins: {
+            legend: { position: 'top' },
+            title: { display: false }
+          }
+        }
+      };
+  
+      new Chart(ctx, config);
+    }
+    
+  </script>

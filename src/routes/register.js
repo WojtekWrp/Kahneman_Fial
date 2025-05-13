@@ -40,13 +40,17 @@ router.post('/', (req, res) => {
       if (err) {
         console.error('Błąd przy tworzeniu sesji:', err.message);
         return res.status(500).send('Wystąpił błąd przy tworzeniu sesji.');
+     
       }
-
+      
+      // Logowanie udanego dodania użytkownika
+      console.log('Użytkownik został dodany, insertId:', result.insertId);
+      
       req.session.userId = userId;
       req.session.sessionId = sessionResult.insertId;
 
-      // Przekierowanie do pierwszego zadania
-      res.redirect('/intro_nudging1');
+      // Przekierowanie do ankiety
+      res.redirect('/gdms');
     });
   });
 });

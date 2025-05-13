@@ -1,0 +1,10 @@
+delete from preselections
+delete from misdirections
+delete from false_hierarchy
+delete from socialproof
+delete from kolory
+delete from framing
+delete from questions
+delete from timepressing
+delete from sesja
+delete from uzytkownicy

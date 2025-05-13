@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
   console.log("Correct Answers:", correctAnswers);
   console.log("Success Rate:", successRate + "%");
 
-  res.render('outro', { quizResults, successRate }); // Przekazanie wyników i procentu do widoku
+  res.render('outro', { quizResults, successRate, wyniki: req.session.gdmsResults }); // Przekazanie wyników i procentu do widoku
 });
 
 module.exports = router;
