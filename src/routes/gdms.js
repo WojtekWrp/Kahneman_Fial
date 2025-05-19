@@ -16,11 +16,9 @@ router.get('/', (req, res) => {
   res.render('gdms'); // widok EJS
 });
 
-// POST – obliczenie i zapisanie wyników
-router.post('/', (req, res) => {
-  const answers = req.body; // { q1: '4', q2: '3', ... }
+router.post('/', async (req, res) => {
+  const answers = req.body;
 
-  // Inicjalizacja sum punktów
   const totals = {
     intuitive: 0,
     rational: 0,
@@ -29,20 +27,19 @@ router.post('/', (req, res) => {
     avoidance: 0
   };
 
-  // Sumujemy punkty według kategorii
+  // Sumowanie punktów według kategorii
   for (let i = 1; i <= 25; i++) {
     const q = `q${i}`;
     const value = parseInt(answers[q], 10);
     const category = categoryMap[i];
 
-    if (!isNaN(value)) {
+    if (!isNaN(value) && category in totals) {
       totals[category] += value;
     }
   }
 
   const id_sesji = req.session.sessionId;
 
-  // Zapis do bazy danych
   const insertQuery = `
     INSERT INTO GDMS (
       id_sesji,
@@ -54,6 +51,7 @@ router.post('/', (req, res) => {
     ) VALUES (?, ?, ?, ?, ?, ?)
   `;
 
+ 
   const values = [
     id_sesji,
     totals.intuitive,
@@ -71,16 +69,17 @@ router.post('/', (req, res) => {
     avoidance: totals.avoidance
   };
 
+  try {
+    await db.query(insertQuery, values);
 
-  db.query(insertQuery, values, (err, result) => {
-    if (err) {
-      console.error('Błąd przy zapisie do bazy:', err);
-      return res.status(500).send('Wystąpił błąd serwera.');
-    }
-
-    // Przechodzimy dalej
+    // Przejdź dalej
     res.redirect('/intro_nudging1');
-  });
+  } catch (err) {
+    console.error('Błąd przy zapisie do bazy:', err.message);
+    res.status(500).send('Wystąpił błąd serwera.');
+  }
+
+
 });
 
 module.exports = router;

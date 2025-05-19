@@ -14,45 +14,32 @@ router.get('/', (req, res) => {
     res.render('register');
   });
 });
-
-// POST /register - Obsługa formularza rejestracji
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia, rodzaj_zawodu } = req.body;
 
-  // Dodanie użytkownika do bazy danych
   const sql = `
     INSERT INTO uzytkownicy (wiek, plec, id_wyksztalcenia, uczelnia, id_rodzaju_wyksztalcenia, id_zawodu)
     VALUES (?, ?, ?, ?, ?, ?)
   `;
-  db.query(sql, [wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia, rodzaj_zawodu], (err, result) => {
-    if (err) {
-      console.error('Błąd przy rejestracji:', err.message);
-      return res.status(500).send('Wystąpił błąd podczas rejestracji.');
-    }
+
+  try {
+    const [result] = await db.query(sql, [wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia, rodzaj_zawodu]);
 
     console.log('Rejestracja zakończona, dane użytkownika zapisane.');
     const userId = result.insertId;
     const startTime = new Date();
 
-    // Tworzenie nowej sesji w bazie danych
     const sessionSql = 'INSERT INTO sesja (id_uzytkownika, rozp_sesji) VALUES (?, ?)';
-    db.query(sessionSql, [userId, startTime], (err, sessionResult) => {
-      if (err) {
-        console.error('Błąd przy tworzeniu sesji:', err.message);
-        return res.status(500).send('Wystąpił błąd przy tworzeniu sesji.');
-     
-      }
-      
-      // Logowanie udanego dodania użytkownika
-      console.log('Użytkownik został dodany, insertId:', result.insertId);
-      
-      req.session.userId = userId;
-      req.session.sessionId = sessionResult.insertId;
+    const [sessionResult] = await db.query(sessionSql, [userId, startTime]);
 
-      // Przekierowanie do ankiety
-      res.redirect('/gdms');
-    });
-  });
+    req.session.userId = userId;
+    req.session.sessionId = sessionResult.insertId;
+
+    res.redirect('/gdms');
+  } catch (err) {
+    console.error('Błąd przy rejestracji lub tworzeniu sesji:', err.message);
+    res.status(500).send('Wystąpił błąd podczas rejestracji.');
+  }
 });
-
+      
 module.exports = router;

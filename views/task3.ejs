@@ -123,6 +123,8 @@
                 </button>
                 <input type="hidden" name="timeout" id="timeout" value="false">
                 <input type="hidden" name="task3Token" value="<%= task3Token %>">
+                <input type="hidden" name="choice" id="choice-hidden" value="">
+
             </div>
         </form>
         <div class="progress">
@@ -130,61 +132,70 @@
         </div>
     </div>
 <% } %>
-    <script>
-        window.onpageshow = function(event) {
-        if (event.persisted) { // Jeśli strona wraca z pamięci podręcznej bfcache
-            window.location.reload(); // Wymusza ponowne załadowanie GET /task1
-        }};
-        const taskDuration = <%= wylosowanyCzas %> * 1000;
-        const progressBar = document.getElementById('progress-bar');
-        const form = document.getElementById('task3-form');
-        const timeoutInput = document.getElementById('timeout');
+<script>
+    window.onpageshow = function(event) {
+        if (event.persisted) window.location.reload();
+    };
 
-        function startProgressBar(duration) {
-            const interval = 50;
-            const step = 100 / (duration / interval);
-            let progress = 0;
+    const taskDuration = <%= wylosowanyCzas %> * 1000;
+    const form = document.getElementById('task3-form');
+    const timeoutInput = document.getElementById('timeout');
+    const choiceInput = document.getElementById('choice-hidden');
+    const progressBar = document.getElementById('progress-bar');
 
-            const timer = setInterval(() => {
-                progress += step;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(timer);
-                    timeoutInput.value = 'true';
-                    form.submit();
-                }
-                progressBar.style.width = `${progress}%`;
-            }, interval);
-        }
+    const submitButton1 = document.getElementById('submit-button1');
+    const submitButton2 = document.getElementById('submit-button2');
 
-        startProgressBar(taskDuration);
+    // Ustawianie wartości choice przy kliknięciu
+    submitButton1.addEventListener('click', () => {
+        choiceInput.value = 'without_insurance';
+    });
 
-        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
-        window.onpopstate = function () {
+    submitButton2.addEventListener('click', () => {
+        choiceInput.value = 'with_insurance';
+    });
+
+    // Timeout
+    function startProgressBar(duration) {
+        const interval = 50;
+        const step = 100 / (duration / interval);
+        let progress = 0;
+
+        const timer = setInterval(() => {
+            progress += step;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(timer);
+                timeoutInput.value = 'true';
+                choiceInput.value = 'timeout';
+                form.submit();
+            }
+            progressBar.style.width = `${progress}%`;
+        }, interval);
+    }
+
+    startProgressBar(taskDuration);
+
+    // Cofanie w przeglądarce
+    window.onpopstate = function () {
         const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
         if (userChoice) {
-        // Użytkownik wybrał "OK" → przekierowanie
-        window.location.href = "/register";
+            window.location.href = "/register";
         } else {
-        // Użytkownik wybrał "Anuluj" → zostaje na stronie i zapobiegamy cofnięciu
-        history.pushState(null, null, location.href);
+            history.pushState(null, null, location.href);
         }
-        };
-        // Zapobiegaj zapisywaniu tej strony w historii
+    };
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', () => {
         history.pushState(null, null, location.href);
-        window.addEventListener('popstate', function () {
-        history.pushState(null, null, location.href);
-        });
-        
+    });
 
-         // Wyłączenie przycisku po pierwszym kliknięciu
-        document.getElementById('task3-form').addEventListener('submit', function() {
-        const submitButton1 = document.getElementById('submit-button1');
-        submitButton1.disabled = true; 
-        const submitButton2 = document.getElementById('submit-button2');
+    // Blokowanie ponownego kliknięcia
+    form.addEventListener('submit', () => {
+        submitButton1.disabled = true;
         submitButton2.disabled = true;
-        });
+    });
+</script>
 
-    </script>
 </body>
 </html>
