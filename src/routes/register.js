@@ -37,8 +37,8 @@ router.post('/', async (req, res) => {
 
     res.redirect('/gdms');
   } catch (err) {
-    console.error('Błąd przy rejestracji lub tworzeniu sesji:', err.message);
-    res.status(500).send('Wystąpił błąd podczas rejestracji.');
+    console.error('Błąd przy rejestracji lub tworzeniu sesji:', err);
+    res.status(500).send('Wystąpił błąd podczas rejestracji.'); 
   }
 });
       

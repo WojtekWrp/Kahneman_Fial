@@ -2,6 +2,20 @@ const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const db = require('./config/db'); // db z /src/config
+
+//podtrzymanie kontaktu z bazą danych
+setInterval(async () => {
+  try {
+    await db.query('SELECT 1');
+    console.log('[KeepAlive] Połączenie z bazą OK');
+  } catch (err) {
+    console.error('[KeepAlive] Błąd połączenia z bazą:', err.message);
+  }
+}, 5 * 60 * 1000); // co 5 minut
+
+
+
+
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 
