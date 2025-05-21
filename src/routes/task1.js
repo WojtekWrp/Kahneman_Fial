@@ -57,7 +57,7 @@ router.post('/', async (req, res) => {
     wynik = (choice === 'green') ? 0 : 1;
   }
 
-  console.log('[POST /task1] Obliczony wynik:', wynik, 'Czas odpowiedzi:', czasOdpowiedziRzeczywisty);
+  console.log('[POST /task1] Obliczony wynik:', choice, wynik, 'Czas odpowiedzi:', czasOdpowiedziRzeczywisty);
 
   if (!req.session.quizResults) req.session.quizResults = [];
   if (!req.session.quizResults.some(result => result.task === 'task1')) {

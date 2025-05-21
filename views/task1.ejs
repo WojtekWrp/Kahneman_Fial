@@ -105,11 +105,13 @@
                   </button>
               
                 <button type="submit" name="choice" id="submit-button2" value="green" class="btn btn-green">
+                    
                 Dodaj ser<br><small>Opcja 10zł droższa</small>
               </button> 
             </div>
             <input type="hidden" name="task1Token" value="<%= task1Token %>">
             <input type="hidden" name="timeout" id="timeout" value="false">
+            <input type="hidden" name="choice" id="choice-hidden" value="">
           </form>
           <div class="progress">
             <div class="progress-bar" id="progress-bar"></div>
@@ -120,69 +122,71 @@
     
 
     <!-- JavaScript do obsługi paska postępu -->
-    <script> 
+   <!-- JavaScript do obsługi paska postępu -->
+<script> 
     window.onpageshow = function(event) {
-        if (event.persisted) { // Jeśli strona wraca z pamięci podręcznej bfcache
+        if (event.persisted) {
             window.location.reload(); // Wymusza ponowne załadowanie GET /task1
-        }};
-        
-         // Pobranie wartości czasu wylosowanego w backendzie
-        const taskDuration = <%= wylosowanyCzas %> * 1000; // Przeliczamy na milisekundy
-        const progressBar = document.getElementById('progress-bar');
-        const form = document.getElementById('task1-form');
-        const timeoutInput = document.getElementById('timeout');
-
-        function startProgressBar(duration) {
-            const interval = 50; // Odświeżanie co 50ms
-            const step = 100 / (duration / interval); // Obliczenie kroku
-            let progress = 0;
-
-            const timer = setInterval(() => {
-                progress += step;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(timer);
-
-                    // Ustawienie znacznika timeout na true
-                    timeoutInput.value = 'true';
-
-                    // Automatyczne przesłanie formularza
-                    form.submit();
-                }
-                progressBar.style.width = `${progress}%`;
-            }, interval);
         }
+    };
 
-        // Uruchomienie paska postępu
-        startProgressBar(taskDuration);
+    const taskDuration = <%= wylosowanyCzas %> * 1000;
+    const progressBar = document.getElementById('progress-bar');
+    const form = document.getElementById('task1-form');
+    const timeoutInput = document.getElementById('timeout');
+    const choiceInput = document.getElementById('choice-hidden');
+    const submitButton1 = document.getElementById('submit-button1');
+    const submitButton2 = document.getElementById('submit-button2');
 
+    // Przypisanie wyboru przy kliknięciu
+    submitButton1.addEventListener('click', function () {
+        choiceInput.value = 'red';
+    });
 
-        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
-        window.onpopstate = function () {
+    submitButton2.addEventListener('click', function () {
+        choiceInput.value = 'green';
+    });
+
+    // Uruchomienie paska postępu z timeoutem
+    function startProgressBar(duration) {
+        const interval = 50;
+        const step = 100 / (duration / interval);
+        let progress = 0;
+
+        const timer = setInterval(() => {
+            progress += step;
+            if (progress >= 100) {
+                clearInterval(timer);
+                timeoutInput.value = 'true';
+                choiceInput.value = 'timeout'; // ważne!
+                form.submit();
+            }
+            progressBar.style.width = `${Math.min(progress, 100)}%`;
+        }, interval);
+    }
+
+    startProgressBar(taskDuration);
+
+    // Obsługa cofania w przeglądarce
+    window.onpopstate = function () {
         const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
         if (userChoice) {
-        // Użytkownik wybrał "OK" → przekierowanie
-        window.location.href = "/register";
+            window.location.href = "/register";
         } else {
-        // Użytkownik wybrał "Anuluj" → zostaje na stronie i zapobiegamy cofnięciu
-        history.pushState(null, null, location.href);
+            history.pushState(null, null, location.href);
         }
-        };
-        // Zapobiegaj zapisywaniu tej strony w historii
+    };
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', function () {
         history.pushState(null, null, location.href);
-        window.addEventListener('popstate', function () {
-        history.pushState(null, null, location.href);
-        });
+    });
 
-         // Wyłączenie przycisku po pierwszym kliknięciu
-        document.getElementById('task1-form').addEventListener('submit', function() {
-        const submitButton1 = document.getElementById('submit-button1');
-        submitButton1.disabled = true; 
-        const submitButton2 = document.getElementById('submit-button2');
+    // Wyłączenie przycisków po wysłaniu formularza
+    form.addEventListener('submit', function() {
+        submitButton1.disabled = true;
         submitButton2.disabled = true;
-        });
-        
-    </script>
+    });
+</script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
