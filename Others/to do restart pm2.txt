@@ -1,0 +1,32 @@
+✅ 1. Usuń wszystkie procesy PM2
+pm2 delete all
+
+To zatrzymuje i usuwa wszystkie aplikacje z pamięci PM2 (ale nie kasuje plików ani kodu).
+
+✅ 2. (Opcjonalnie) Zrób "kill" starego Node'a, jeśli coś zostanie
+Sprawdź, czy coś nadal siedzi na porcie 5000:
+
+sudo lsof -i :5000
+
+Jeśli coś tam nadal działa (node, PM2, itp.), zabij proces:
+
+sudo kill -9 PID
+(PID – numer procesu z kolumny PID)
+
+✅ 3. Uruchom aplikację od nowa
+Z nazwą, np.:
+
+
+pm2 start app.js --name app
+
+
+
+
+✅ 4. Zapisz ten stan jako „domyślny” (autostart po restarcie)
+pm2 save
+
+To zapisze stan aktualnie działających aplikacji.
+
+✅ 5. Sprawdź status
+
+pm2 list
