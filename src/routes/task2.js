@@ -79,7 +79,7 @@ router.post('/', async (req, res) => {
 
   try {
     await db.query(sql, [
-      req.session.sessionId,
+      req.session.sessionID,
       maxCzas,
       czasOdpowiedziRzeczywisty,
       wynik,

@@ -38,7 +38,7 @@ router.post('/', async (req, res) => {
     }
   }
 
-  const id_sesji = req.session.sessionId;
+  const id_sesji = req.session.sessionID;
 
   const insertQuery = `
     INSERT INTO GDMS (

@@ -99,11 +99,11 @@ router.post('/', async (req, res) => {
   `;
 
   try {
-    await db.query(updateSessionSql, [req.session.sessionId]);
+    await db.query(updateSessionSql, [req.session.sessionID]);
     console.log('Czas zakończenia sesji został zaktualizowany.');
 
     await db.query(insertSql, [
-      req.session.sessionId,
+      req.session.sessionID,
       wersja,
       czasOdKlikniecia,
       wynik,

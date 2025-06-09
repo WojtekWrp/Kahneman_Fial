@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
   `;
 
   try {
-    await db.query(sql, [req.session.sessionId, ocena]);
+    await db.query(sql, [req.session.sessionID, ocena]);
 
     console.log('Zapisano ocenę w session_mark:', ocena);
 

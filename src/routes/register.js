@@ -14,6 +14,7 @@ router.get('/', (req, res) => {
     res.render('register');
   });
 });
+
 router.post('/', async (req, res) => {
   const { wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia, rodzaj_zawodu } = req.body;
 
@@ -24,21 +25,30 @@ router.post('/', async (req, res) => {
 
   try {
     const [result] = await db.query(sql, [wiek, plec, wyksztalcenie, uczelnia, rodzaj_wyksztalcenia, rodzaj_zawodu]);
-
-    console.log('Rejestracja zakończona, dane użytkownika zapisane.');
     const userId = result.insertId;
     const startTime = new Date();
 
     const sessionSql = 'INSERT INTO sesja (id_uzytkownika, rozp_sesji) VALUES (?, ?)';
     const [sessionResult] = await db.query(sessionSql, [userId, startTime]);
 
-    req.session.userId = userId;
-    req.session.sessionId = sessionResult.insertId;
+    // Regenerujemy nową, unikalną sesję
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error('Błąd przy regeneracji sesji:', err);
+        return res.status(500).send('Błąd sesji.');
+      }
 
-    res.redirect('/gdms');
+      req.session.userId = userId;
+      req.session.sessionID = sessionResult.insertId;
+      req.session.completedTasks = [];
+
+      console.log(`[REJESTRACJA] Nowa sesja: ${req.sessionID} dla użytkownika ID=${userId}`);
+      res.redirect('/gdms');
+    });
+
   } catch (err) {
     console.error('Błąd przy rejestracji lub tworzeniu sesji:', err);
-    res.status(500).send('Wystąpił błąd podczas rejestracji.'); 
+    res.status(500).send('Wystąpił błąd podczas rejestracji.');
   }
 });
       
