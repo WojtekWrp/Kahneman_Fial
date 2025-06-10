@@ -11,10 +11,15 @@ router.get('/', (req, res) => {
   const isNegative = Math.random() < 0.5;
   const wersja = isNegative ? 'negative' : 'positive';
   req.session.wersja = wersja;
-  console.log("wylosowana wersja:", wersja, "sessionID:", req.sessionID);
 
   const task7Token = crypto.randomBytes(16).toString('hex');
   req.session.task7Token = task7Token;
+
+  console.log('[GET /task7]', {
+    wersja,
+    sessionID: req.sessionID,
+    task7Token
+  });
 
   res.render('task7', {
     wersja,
@@ -26,54 +31,51 @@ router.get('/', (req, res) => {
 // POST /task7
 router.post('/', async (req, res) => {
   if (!req.session.visitedTask7Get) {
-    console.log("[POST /task7] Nie odwiedził GET /task7 → redirect");
+    console.log('[POST /task7] Pominięty GET, redirect');
     return res.redirect('/task7');
   }
 
-  const { task7Token: bodyToken } = req.body;
-  console.log("[POST /task7] bodyToken:", bodyToken, "sessionToken:", req.session.task7Token, "SESSION ID:", req.sessionID);
+  const { task7Token: bodyToken, ubezpieczenie, timeout: timeoutRaw } = req.body;
+  const sessionToken = req.session.task7Token;
 
-  if (bodyToken !== req.session.task7Token) {
+  if (bodyToken !== sessionToken) {
     return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
   }
 
   req.session.completedTasks = req.session.completedTasks || [];
+  if (!req.session.completedTasks.includes('task7')) {
+    req.session.completedTasks.push('task7');
+  }
 
-  // if (req.session.completedTasks.includes('task7')) {
-  //   return res.status(400).send('To zadanie zostało już ukończone.');
-  // }
-
-  const timeout = req.body.timeout === 'true';
-  const startTimestamp = req.session.taskStart || 0;
+  const timeout = timeoutRaw === 'true';
+  const startTimestamp = req.session.taskStart || Date.now();
   const now = Date.now();
   const czasOdpowiedziRzeczywisty = (now - startTimestamp) / 1000;
 
   const wersja = req.session.wersja || 'unknown';
-  const ubezpieczenie = req.body.ubezpieczenie;
 
-  let wynik;
-  if (timeout) {
-    wynik = 0;
-    console.log('Zadanie zakończone przez timeout');
-  } else {
+  let wynik = 0;
+  if (!timeout) {
     wynik = (ubezpieczenie === 'True') ? 0 : 1;
   }
 
-  if (!req.session.quizResults) req.session.quizResults = [];
-  if (!req.session.quizResults.some(result => result.task === 'task7')) {
+  req.session.quizResults = req.session.quizResults || [];
+  if (!req.session.quizResults.some(r => r.task === 'task7')) {
     req.session.quizResults.push({ task: 'task7', result: wynik });
   }
 
   console.log('[POST /task7]', {
     wersja,
-    czasOdpowiedziRzeczywisty,
     wynik,
+    timeout,
+    czasOdpowiedziRzeczywisty,
     ubezpieczenie
   });
 
   const sql = `
-    INSERT INTO framing (id_sesji, wersja, czas_odpowiedzi, wynik, timeout)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO framing (
+      id_sesji, wersja, czas_odpowiedzi, wynik, timeout
+    ) VALUES (?, ?, ?, ?, ?)
   `;
 
   try {
@@ -85,14 +87,18 @@ router.post('/', async (req, res) => {
       timeout ? 1 : 0
     ]);
 
-    req.session.completedTasks.push('task7');
-
     delete req.session.visitedTask7Get;
     delete req.session.task7Token;
     delete req.session.wersja;
     delete req.session.taskStart;
 
-    res.redirect('/intro_task8');
+    req.session.save(err => {
+      if (err) {
+        console.error('[POST /task7] Błąd zapisu sesji:', err);
+        return res.status(500).send('Błąd sesji.');
+      }
+      res.redirect('/intro_task8');
+    });
   } catch (err) {
     console.error('Błąd przy zapisie do framing:', err.message);
     res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');

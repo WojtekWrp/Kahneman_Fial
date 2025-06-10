@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db'); // db = pool.promise()
 
-// GET /task8 – wyświetlenie zadania
+// GET /task8
 router.get('/', (req, res) => {
   req.session.visitedTask8Get = true;
 
@@ -12,16 +12,14 @@ router.get('/', (req, res) => {
 
   req.session.maxCzas = maxCzas;
   req.session.isTricked = isTricked;
+  req.session.taskStart = Date.now();
 
   const task8Token = crypto.randomBytes(16).toString('hex');
   req.session.task8Token = task8Token;
 
-  req.session.taskStart = Date.now();
-
   console.log('[GET /task8]', {
     isTricked,
     maxCzas,
-    taskStart: req.session.taskStart,
     sessionID: req.sessionID,
     task8Token
   });
@@ -34,57 +32,49 @@ router.get('/', (req, res) => {
   });
 });
 
-// POST /task8 – zapis wyniku
+// POST /task8
 router.post('/', async (req, res) => {
   if (!req.session.visitedTask8Get) {
-    console.log('[POST /task8] Nie odwiedził GET /task8 → redirect');
+    console.log('[POST /task8] GET nieodwiedzony → redirect');
     return res.redirect('/task8');
   }
 
-  const { task8Token: bodyToken } = req.body;
-  console.log('[POST /task8]', {
-    bodyToken,
-    sessionToken: req.session.task8Token,
-    sessionID: req.sessionID
-  });
+  const { task8Token: bodyToken, koszulka, timeout: timeoutRaw } = req.body;
+  const sessionToken = req.session.task8Token;
 
-  if (bodyToken !== req.session.task8Token) {
+  if (bodyToken !== sessionToken) {
     return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
   }
 
   req.session.completedTasks = req.session.completedTasks || [];
+  if (!req.session.completedTasks.includes('task8')) {
+    req.session.completedTasks.push('task8');
+  }
 
-  // if (req.session.completedTasks.includes('task8')) {
-  //   return res.status(400).send('To zadanie zostało już ukończone.');
-  // }
-
-  const timeout = req.body.timeout === 'true';
-  const startTimestamp = req.session.taskStart || 0;
+  const timeout = timeoutRaw === 'true';
+  const startTimestamp = req.session.taskStart || Date.now();
   const now = Date.now();
   const czasOdKlikniecia = (now - startTimestamp) / 1000;
 
   const isTricked = req.session.isTricked || false;
   const wersja = isTricked ? 'tricked' : 'normal';
-  const koszulka = req.body.koszulka;
 
-  let wynik;
-  if (timeout) {
-    wynik = 0;
-    console.log('Zadanie zakończone przez timeout');
-  } else {
-    wynik = (koszulka === 'True') ? 0 : 1;
-    console.log('wynik z else:', wynik);
+  let wynik = 0;
+  if (!timeout) {
+    wynik = koszulka === 'True' ? 0 : 1;
   }
 
-  if (!req.session.quizResults) req.session.quizResults = [];
-  if (!req.session.quizResults.some(result => result.task === 'task8')) {
+  req.session.quizResults = req.session.quizResults || [];
+  if (!req.session.quizResults.some(r => r.task === 'task8')) {
     req.session.quizResults.push({ task: 'task8', result: wynik });
   }
 
   console.log('[POST /task8]', {
     wersja,
     czasOdKlikniecia,
-    wynik
+    wynik,
+    timeout,
+    koszulka
   });
 
   const updateSessionSql = `
@@ -100,7 +90,7 @@ router.post('/', async (req, res) => {
 
   try {
     await db.query(updateSessionSql, [req.session.sessionID]);
-    console.log('Czas zakończenia sesji został zaktualizowany.');
+    console.log('Zaktualizowano czas zakończenia sesji.');
 
     await db.query(insertSql, [
       req.session.sessionID,
@@ -110,15 +100,22 @@ router.post('/', async (req, res) => {
       timeout ? 1 : 0
     ]);
 
-    req.session.completedTasks.push('task8');
-
+    // Czyścimy dane z sesji
     delete req.session.visitedTask8Get;
     delete req.session.task8Token;
     delete req.session.maxCzas;
     delete req.session.isTricked;
     delete req.session.taskStart;
 
-    res.redirect('/feedback');
+    // Zapis sesji i redirect
+    req.session.save(err => {
+      if (err) {
+        console.error('Błąd przy zapisie sesji (task8):', err);
+        return res.status(500).send('Błąd sesji.');
+      }
+      res.redirect('/feedback');
+    });
+
   } catch (err) {
     console.error('Błąd przy zapisie do socialproof:', err.message);
     res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');

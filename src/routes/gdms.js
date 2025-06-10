@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 
-// Mapa: nr pytania → kategoria
 const categoryMap = {
   1: 'intuitive',    2: 'dependency', 3: 'intuitive',   4: 'rational',    5: 'dependency',
   6: 'avoidance',    7: 'rational',   8: 'instant',     9: 'instant',     10: 'dependency',
@@ -13,7 +12,7 @@ const categoryMap = {
 
 // GET – wyświetlenie formularza
 router.get('/', (req, res) => {
-  res.render('gdms'); // widok EJS
+  res.render('gdms');
 });
 
 router.post('/', async (req, res) => {
@@ -27,7 +26,6 @@ router.post('/', async (req, res) => {
     avoidance: 0
   };
 
-  // Sumowanie punktów według kategorii
   for (let i = 1; i <= 25; i++) {
     const q = `q${i}`;
     const value = parseInt(answers[q], 10);
@@ -40,8 +38,14 @@ router.post('/', async (req, res) => {
 
   const id_sesji = req.session.sessionID;
 
+  if (!id_sesji) {
+    console.warn('Brak sessionID — użytkownik nieprawidłowo zarejestrowany?');
+    return res.redirect('/register');
+  }
+
+  // Wstaw tylko raz
   const insertQuery = `
-    INSERT INTO GDMS (
+    INSERT IGNORE INTO GDMS (
       id_sesji,
       points_intuitive,
       points_rational,
@@ -51,7 +55,6 @@ router.post('/', async (req, res) => {
     ) VALUES (?, ?, ?, ?, ?, ?)
   `;
 
- 
   const values = [
     id_sesji,
     totals.intuitive,
@@ -60,26 +63,33 @@ router.post('/', async (req, res) => {
     totals.instant,
     totals.avoidance
   ];
-    // Zapisz wyniki do sesji, żeby były dostępne w innych widokach
-    req.session.gdmsResults = {
-    intuitive: totals.intuitive,
-    rational: totals.rational,
-    dependency: totals.dependency,
-    instant: totals.instant,
-    avoidance: totals.avoidance
-  };
 
   try {
     await db.query(insertQuery, values);
 
-    // Przejdź dalej
-    res.redirect('/intro_nudging1');
+    // Zapamiętaj wynik w sesji (do widoków, jeśli potrzebny)
+    req.session.gdmsResults = totals;
+
+    // Zabezpiecz completedTasks jako tablicę
+    req.session.completedTasks = req.session.completedTasks || [];
+
+    // Dodaj tylko raz
+    if (!req.session.completedTasks.includes('gdms')) {
+      req.session.completedTasks.push('gdms');
+    }
+
+    // Zapisz sesję, dopiero potem przekieruj
+    req.session.save((err) => {
+      if (err) {
+        console.error('Błąd zapisu sesji:', err);
+        return res.status(500).send('Błąd sesji.');
+      }
+      res.redirect('/intro_nudging1');
+    });
   } catch (err) {
-    console.error('Błąd przy zapisie do bazy:', err.message);
-    res.status(500).send('Wystąpił błąd serwera.');
+    console.error('Błąd przy zapisie do bazy GDMS:', err.message);
+    res.status(500).send('Wystąpił błąd podczas zapisu wyników.');
   }
-
-
 });
 
 module.exports = router;

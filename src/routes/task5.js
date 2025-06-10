@@ -25,47 +25,39 @@ router.get('/', (req, res) => {
   });
 });
 
-// POST /task5 – obsługa formularza dla Zadania 5
+// POST /task5 – zapis wyniku
 router.post('/', async (req, res) => {
   if (!req.session.visitedTask5Get) {
     console.log('[POST /task5] Brak visitedTask5Get, redirect do /task5');
     return res.redirect('/task5');
   }
 
-  const { task5Token: bodyToken } = req.body;
-  console.log("[POST /task5]", {
+  const { task5Token: bodyToken, choice, timeout: timeoutRaw } = req.body;
+  const sessionToken = req.session.task5Token;
+
+  console.log('[POST /task5]', {
     bodyToken,
-    sessionToken: req.session.task5Token,
+    sessionToken,
     sessionID: req.sessionID
   });
 
-  if (bodyToken !== req.session.task5Token) {
+  if (bodyToken !== sessionToken) {
     return res.status(403).send('Nieprawidłowy token. Dostęp zabroniony.');
   }
 
   req.session.completedTasks = req.session.completedTasks || [];
-
-  // if (req.session.completedTasks.includes('task5')) {
-  //   return res.status(400).send('To zadanie zostało już ukończone.');
-  // }
-
-  const timeout = req.body.timeout === 'true';
-  const startTimestamp = req.session.taskStart || 0;
-  const now = Date.now();
-  const czasOdpowiedziRzeczywisty = (now - startTimestamp) / 1000;
-
-  const { choice } = req.body;
-  const maxCzas = req.session.maxCzas || 5;
-
-  let wynik;
-  if (timeout) {
-    wynik = 0;
-    console.log('Zadanie zakończone przez timeout');
-  } else {
-    wynik = (choice === 'True') ? 0 : 1;
+  if (!req.session.completedTasks.includes('task5')) {
+    req.session.completedTasks.push('task5');
   }
 
-  if (!req.session.quizResults) req.session.quizResults = [];
+  const timeout = timeoutRaw === 'true';
+  const startTimestamp = req.session.taskStart || Date.now();
+  const czasOdpowiedziRzeczywisty = (Date.now() - startTimestamp) / 1000;
+  const maxCzas = req.session.maxCzas || 5;
+
+  const wynik = timeout ? 0 : (choice === 'True' ? 0 : 1);
+
+  req.session.quizResults = req.session.quizResults || [];
   if (!req.session.quizResults.some(r => r.task === 'task5')) {
     req.session.quizResults.push({ task: 'task5', result: wynik });
   }
@@ -85,8 +77,7 @@ router.post('/', async (req, res) => {
       czas_odpowiedzi, 
       wynik, 
       timeout
-    )
-    VALUES (?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?)
   `;
 
   try {
@@ -98,16 +89,23 @@ router.post('/', async (req, res) => {
       timeout ? 1 : 0
     ]);
 
-    req.session.completedTasks.push('task5');
-
+    // Czyszczenie sesji
     delete req.session.visitedTask5Get;
     delete req.session.task5Token;
     delete req.session.maxCzas;
     delete req.session.taskStart;
 
-    res.redirect('/intro_task6');
+    // Bezpieczny redirect
+    req.session.save(err => {
+      if (err) {
+        console.error('[POST /task5] Błąd zapisu sesji:', err);
+        return res.status(500).send('Błąd sesji.');
+      }
+      res.redirect('/intro_task6');
+    });
+
   } catch (err) {
-    console.error('Błąd przy zapisie wyniku dla zadania 5:', err.message);
+    console.error('Błąd przy zapisie wyniku (task5):', err.message);
     res.status(500).send('Wystąpił błąd podczas zapisywania wyniku.');
   }
 });
