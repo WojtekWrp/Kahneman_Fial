@@ -9,7 +9,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-
         body { background-color: #f8f9fa; }
         .form-card {
             max-width: 880px;
@@ -19,13 +18,16 @@
             border-radius: 1rem;
             box-shadow: 0 4px 16px rgba(0, 0, 0, .08);
         }
-        .form-check-label {
-        min-width: 6rem;
-        text-align: center;
+        .form-label {
+            display: block;
+            font-weight: bold;
         }
-        .scale-label { width: 6rem; }   /* stała szer. etykiet skali */
-        @media (max-width: 575px) {
-            .scale-label { width: 5rem; font-size: .9rem; }
+        .scale-label {
+            text-align: center;
+        }
+        .form-select {
+            width: auto;
+            display: inline-block;
         }
     </style>
 
@@ -47,30 +49,19 @@
         <!-- Wzór: qN / data-category = intuitive | dependency | rational | instant | avoidance -->
 
         <!--  1 -->
-        <fieldset class="mb-4">
+         <fieldset class="mb-4">
             <legend class="fw-medium">
                 1. Zwracam uwagę na własne przeczucie (wewnętrzną intuicję) podczas podejmowania decyzji.
             </legend>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q1" id="q1_5" value="5" data-category="intuitive" required />
-                <label class="form-check-label scale-label" for="q1_5">Zawsze</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q1" id="q1_4" value="4" data-category="intuitive" />
-                <label class="form-check-label scale-label" for="q1_4">Najczęściej</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q1" id="q1_3" value="3" data-category="intuitive" />
-                <label class="form-check-label scale-label" for="q1_3">Czasami</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q1" id="q1_2" value="2" data-category="intuitive" />
-                <label class="form-check-label scale-label" for="q1_2">Rzadko</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q1" id="q1_1" value="1" data-category="intuitive" />
-                <label class="form-check-label scale-label" for="q1_1">Nigdy</label>
-            </div>
+            <label for="q1" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q1" id="q1" data-category="intuitive" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
         <!--  2 -->
@@ -78,59 +69,55 @@
             <legend class="fw-medium">
                 2. Potrafię podejmować decyzje bez zasięgania opinii innych osób.
             </legend>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q2" id="q2_5" value="5" data-category="dependency" required />
-                <label class="form-check-label scale-label" for="q2_5">Zawsze</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q2" id="q2_4" value="4" data-category="dependency" />
-                <label class="form-check-label scale-label" for="q2_4">Najczęściej</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q2" id="q2_3" value="3" data-category="dependency" />
-                <label class="form-check-label scale-label" for="q2_3">Czasami</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q2" id="q2_2" value="2" data-category="dependency" />
-                <label class="form-check-label scale-label" for="q2_2">Rzadko</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q2" id="q2_1" value="1" data-category="dependency" />
-                <label class="form-check-label scale-label" for="q2_1">Nigdy</label>
-            </div>
+            <label for="q2" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q2" id="q2" data-category="dependency" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
-        <!--  3 -->
+      
+      
         <fieldset class="mb-4">
             <legend class="fw-medium">
                 3. Przy podejmowaniu decyzji ważniejsze jest dla mnie poczucie, że decyzja jest słuszna, niż posiadanie logicznego uzasadnienia tej słuszności.
             </legend>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q3" id="q3_5" value="5" data-category="intuitive" required />
-                <label class="form-check-label scale-label" for="q3_5">Zawsze</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q3" id="q3_4" value="4" data-category="intuitive" />
-                <label class="form-check-label scale-label" for="q3_4">Najczęściej</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q3" id="q3_3" value="3" data-category="intuitive" />
-                <label class="form-check-label scale-label" for="q3_3">Czasami</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q3" id="q3_2" value="2" data-category="intuitive" />
-                <label class="form-check-label scale-label" for="q3_2">Rzadko</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="q3" id="q3_1" value="1" data-category="intuitive" />
-                <label class="form-check-label scale-label" for="q3_1">Nigdy</label>
-            </div>
+            <label for="q3" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q3" id="q3" data-category="intuitive" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
+        </fieldset>
+
+
+
+         <fieldset class="mb-4">
+            <legend class="fw-medium">
+                4. Potrafię dwukrotnie sprawdzić wszystkie źródła informacji, aby upewnić się, że mam właściwe fakty przed podjęciem decyzji.
+            </legend>
+            <label for="q4" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q4" id="q4" data-category="rational" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
         <!--  4 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
-                4. Potrafię dwukrotnie sprawdzić wszystkie źródła informacji, aby upewnić się, że mam właściwe fakty przed podjęciem decyzji.
+                
             </legend>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="q4" id="q4_5" value="5" data-category="rational" required />
@@ -152,10 +139,28 @@
                 <input class="form-check-input" type="radio" name="q4" id="q4_1" value="1" data-category="rational" />
                 <label class="form-check-label scale-label" for="q4_1">Nigdy</label>
             </div>
-        </fieldset>
+        </fieldset> -->
 
         <!--  5 -->
+
         <fieldset class="mb-4">
+            <legend class="fw-medium">
+                5. Podejmując ważne decyzje, działam w oparciu o to, co mówią inni.
+            </legend>
+            <label for="q5" class="form-label">Wybierz odpowiedź</label>
+            <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+            <select class="form-select" name="q5" id="q5" data-category="dependency" required>
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
+        </fieldset>
+
+
+
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 5. Podejmując ważne decyzje, działam w oparciu o to, co mówią inni.
             </legend>
@@ -179,9 +184,24 @@
                 <input class="form-check-input" type="radio" name="q5" id="q5_1" value="1" data-category="dependency" />
                 <label class="form-check-label scale-label" for="q5_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+        <fieldset class="mb-4">
+            <legend class="fw-medium">
+            6. Unikam podejmowania decyzji, ponieważ myślenie o nich wywołuje u mnie niepokój.
+            </legend>
+            <label for="q6" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q6" id="q6" data-category="avoidance" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
-        <!--  6 -->
+         <!-- 6
         <fieldset class="mb-4">
             <legend class="fw-medium">
                 6. Unikam podejmowania decyzji, ponieważ myślenie o nich wywołuje u mnie niepokój.
@@ -206,10 +226,28 @@
                 <input class="form-check-input" type="radio" name="q6" id="q6_1" value="1" data-category="avoidance" />
                 <label class="form-check-label scale-label" for="q6_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+         <fieldset class="mb-4">
+            <legend class="fw-medium">
+             7. Wszystkie decyzje można podejmować w całkowicie logiczny i systematyczny sposób.
+            </legend>
+            <label for="q7" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q7" id="q7" data-category="rational" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
+
+
         <!--  7 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 7. Wszystkie decyzje można podejmować w całkowicie logiczny i systematyczny sposób.
             </legend>
@@ -233,10 +271,25 @@
                 <input class="form-check-input" type="radio" name="q7" id="q7_1" value="1" data-category="rational" />
                 <label class="form-check-label scale-label" for="q7_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+         <fieldset class="mb-4">
+            <legend class="fw-medium">
+             8. Przy podejmowaniu decyzji robię to, co w danej chwili uważam za słuszne.
+            </legend>
+            <label for="q8" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q8" id="q8" data-category="instant" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
         <!--  8 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 8. Przy podejmowaniu decyzji robię to, co w danej chwili uważam za słuszne.
             </legend>
@@ -260,10 +313,26 @@
                 <input class="form-check-input" type="radio" name="q8" id="q8_1" value="1" data-category="instant" />
                 <label class="form-check-label scale-label" for="q8_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+        <fieldset class="mb-4">
+            <legend class="fw-medium">
+              9. Podejmuję spontaniczne decyzje.
+            </legend>
+            <label for="q9" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q9" id="q9" data-category="instant" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
         <!--  9 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 9. Podejmuję spontaniczne decyzje.
             </legend>
@@ -287,10 +356,29 @@
                 <input class="form-check-input" type="radio" name="q9" id="q9_1" value="1" data-category="instant" />
                 <label class="form-check-label scale-label" for="q9_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+
+          <fieldset class="mb-4">
+            <legend class="fw-medium">
+              10. W obliczu ważnych decyzji lubię, gdy ktoś wskazuje mi właściwy kierunek.
+            </legend>
+            <label for="q10" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q10" id="q10" data-category="dependency" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
+
+
         <!-- 10 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 10. W obliczu ważnych decyzji lubię, gdy ktoś wskazuje mi właściwy kierunek.
             </legend>
@@ -314,10 +402,26 @@
                 <input class="form-check-input" type="radio" name="q10" id="q10_1" value="1" data-category="dependency" />
                 <label class="form-check-label scale-label" for="q10_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+         <fieldset class="mb-4">
+            <legend class="fw-medium">
+             11. Decyzje podejmowane w nagłych sytuacjach wymagają u mnie dokładnego przemyślenia.
+            </legend>
+            <label for="q11" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q11" id="q11" data-category="rational" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
         <!-- 11 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 11. Decyzje podejmowane w nagłych sytuacjach wymagają u mnie dokładnego przemyślenia.
             </legend>
@@ -341,10 +445,29 @@
                 <input class="form-check-input" type="radio" name="q11" id="q11_1" value="1" data-category="rational" />
                 <label class="form-check-label scale-label" for="q11_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+
+        
+          <fieldset class="mb-4">
+            <legend class="fw-medium">
+             12. Ufam swoim wewnętrznym odczuciom i reakcjom podczas podejmowania decyzji.
+            </legend>
+            <label for="q12" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q12" id="q12" data-category="intuitive" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
+
         <!-- 12 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 12. Ufam swoim wewnętrznym odczuciom i reakcjom podczas podejmowania decyzji.
             </legend>
@@ -368,10 +491,26 @@
                 <input class="form-check-input" type="radio" name="q12" id="q12_1" value="1" data-category="intuitive" />
                 <label class="form-check-label scale-label" for="q12_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+        <fieldset class="mb-4">
+            <legend class="fw-medium">
+             13. Podczas podejmowania decyzji potrafię samodzielnie zidentyfikować i sprawdzić różne możliwości.
+            </legend>
+            <label for="q13" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q13" id="q13" data-category="rational" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
         <!-- 13 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 13. Podczas podejmowania decyzji potrafię samodzielnie zidentyfikować i sprawdzić różne możliwości.
             </legend>
@@ -395,10 +534,26 @@
                 <input class="form-check-input" type="radio" name="q13" id="q13_1" value="1" data-category="rational" />
                 <label class="form-check-label scale-label" for="q13_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+        <fieldset class="mb-4">
+            <legend class="fw-medium">
+             14. Wstrzymuję się od podejmowania ważnych decyzji, dopóki nie ma do tego przymusu w danej sytuacji.
+            </legend>
+            <label for="q14" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q14" id="q14" data-category="avoidance" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
         <!-- 14 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 14. Wstrzymuję się od podejmowania ważnych decyzji, dopóki nie ma do tego przymusu w danej sytuacji.
             </legend>
@@ -422,10 +577,28 @@
                 <input class="form-check-input" type="radio" name="q14" id="q14_1" value="1" data-category="avoidance" />
                 <label class="form-check-label scale-label" for="q14_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+
+         <fieldset class="mb-4">
+            <legend class="fw-medium">
+            15. Podejmuję decyzje bez wcześniejszego przygotowania.
+            </legend>
+            <label for="q15" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q15" id="q15" data-category="instant" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
+
         <!-- 15 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 15. Podejmuję decyzje bez wcześniejszego przygotowania.
             </legend>
@@ -449,10 +622,28 @@
                 <input class="form-check-input" type="radio" name="q15" id="q15_1" value="1" data-category="instant" />
                 <label class="form-check-label scale-label" for="q15_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+
+        <fieldset class="mb-4">
+            <legend class="fw-medium">
+            16. Polegam na własnym wyczuciu (wewnętrznym odbiorze) przy podejmowaniu decyzji.
+            </legend>
+            <label for="q16" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q16" id="q16" data-category="intuitive" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
+
         <!-- 16 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 16. Polegam na własnym wyczuciu (wewnętrznym odbiorze) przy podejmowaniu decyzji.
             </legend>
@@ -476,10 +667,26 @@
                 <input class="form-check-input" type="radio" name="q16" id="q16_1" value="1" data-category="intuitive" />
                 <label class="form-check-label scale-label" for="q16_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+        <fieldset class="mb-4">
+            <legend class="fw-medium">
+            17. Podejmuję decyzje, które wydają mi się słuszne.
+            </legend>
+            <label for="q17" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q17" id="q17" data-category="intuitive" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
         <!-- 17 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 17. Podejmuję decyzje, które wydają mi się słuszne.
             </legend>
@@ -503,10 +710,28 @@
                 <input class="form-check-input" type="radio" name="q17" id="q17_1" value="1" data-category="intuitive" />
                 <label class="form-check-label scale-label" for="q17_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+
+         <fieldset class="mb-4">
+            <legend class="fw-medium">
+            18. Potrzebuję pomocy innych osób podczas podejmowania decyzji.
+            </legend>
+            <label for="q18" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q18" id="q18" data-category="dependency" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
+
         <!-- 18 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 18. Potrzebuję pomocy innych osób podczas podejmowania decyzji.
             </legend>
@@ -530,10 +755,28 @@
                 <input class="form-check-input" type="radio" name="q18" id="q18_1" value="1" data-category="dependency" />
                 <label class="form-check-label scale-label" for="q18_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+
+         <fieldset class="mb-4">
+            <legend class="fw-medium">
+            19. Odkładam podjęcie decyzji tak długo, jak to możliwe.
+            </legend>
+            <label for="q19" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q19" id="q19" data-category="avoidance" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
+
         <!-- 19 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 19. Odkładam podjęcie decyzji tak długo, jak to możliwe.
             </legend>
@@ -557,10 +800,28 @@
                 <input class="form-check-input" type="radio" name="q19" id="q19_1" value="1" data-category="avoidance" />
                 <label class="form-check-label scale-label" for="q19_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+
+        <fieldset class="mb-4">
+            <legend class="fw-medium">
+           20. Podejmuję decyzje bez wcześniejszych przygotowań, od razu w momencie pojawienia się problemu.
+            </legend>
+            <label for="q20" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q20" id="q20" data-category="instant" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
+
         <!-- 20 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 20. Podejmuję decyzje bez wcześniejszych przygotowań, od razu w momencie pojawienia się problemu.
             </legend>
@@ -584,10 +845,27 @@
                 <input class="form-check-input" type="radio" name="q20" id="q20_1" value="1" data-category="instant" />
                 <label class="form-check-label scale-label" for="q20_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+
+        <fieldset class="mb-4">
+            <legend class="fw-medium">
+           21. Unikam podejmowania ważnych decyzji.
+            </legend>
+            <label for="q21" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q21" id="q21" data-category="avoidance" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
         <!-- 21 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 21. Unikam podejmowania ważnych decyzji.
             </legend>
@@ -611,10 +889,27 @@
                 <input class="form-check-input" type="radio" name="q21" id="q21_1" value="1" data-category="avoidance" />
                 <label class="form-check-label scale-label" for="q21_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+        <fieldset class="mb-4">
+            <legend class="fw-medium">
+           22. Uważam, że nie jestem w stanie podejmować decyzji bez wsparcia innych.
+            </legend>
+            <label for="q22" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q22" id="q22" data-category="dependency" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
+
         <!-- 22 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 22. Uważam, że nie jestem w stanie podejmować decyzji bez wsparcia innych.
             </legend>
@@ -638,10 +933,26 @@
                 <input class="form-check-input" type="radio" name="q22" id="q22_1" value="1" data-category="dependency" />
                 <label class="form-check-label scale-label" for="q22_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+        <fieldset class="mb-4">
+            <legend class="fw-medium">
+            23. Podejmuję ważne decyzje w ostatniej chwili.
+            </legend>
+            <label for="q23" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q23" id="q23" data-category="avoidance" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
         <!-- 23 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 23. Podejmuję ważne decyzje w ostatniej chwili.
             </legend>
@@ -665,10 +976,32 @@
                 <input class="form-check-input" type="radio" name="q23" id="q23_1" value="1" data-category="avoidance" />
                 <label class="form-check-label scale-label" for="q23_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+
+
+         <fieldset class="mb-4">
+            <legend class="fw-medium">
+            24. Kiedy podejmuję decyzję, robię to szybko.
+            </legend>
+            <label for="q24" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q24" id="q24" data-category="instant" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
+
+
+
+
+
         <!-- 24 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 24. Kiedy podejmuję decyzję, robię to szybko.
             </legend>
@@ -692,10 +1025,27 @@
                 <input class="form-check-input" type="radio" name="q24" id="q24_1" value="1" data-category="instant" />
                 <label class="form-check-label scale-label" for="q24_1">Nigdy</label>
             </div>
+        </fieldset> -->
+
+
+
+          <fieldset class="mb-4">
+            <legend class="fw-medium">
+            25. W sytuacjach krytycznych i niejednoznacznych podejmuję decyzje wyłącznie w oparciu o logikę (racjonalnie).
+            </legend>
+            <label for="q25" class="form-label">Wybierz odpowiedź</label>
+            <select class="form-select" name="q25" id="q25" data-category="rational" required>
+                <option value="" disabled selected>Wybierz odpowiedź</option> <!-- Pusta opcja domyślna -->
+                <option value="5">5 - Zdecydowanie się zgadzam</option>
+                <option value="4">4 - Zgadzam się</option>
+                <option value="3">3 - Jestem neutralny</option>
+                <option value="2">2 - Nie zgadzam się</option>
+                <option value="1">1 - Zdecydowanie się nie zgadzam</option>
+            </select>
         </fieldset>
 
         <!-- 25 -->
-        <fieldset class="mb-4">
+        <!-- <fieldset class="mb-4">
             <legend class="fw-medium">
                 25. W sytuacjach krytycznych i niejednoznacznych podejmuję decyzje wyłącznie w oparciu o logikę (racjonalnie).
             </legend>
@@ -719,7 +1069,7 @@
                 <input class="form-check-input" type="radio" name="q25" id="q25_1" value="1" data-category="rational" />
                 <label class="form-check-label scale-label" for="q25_1">Nigdy</label>
             </div>
-        </fieldset>
+        </fieldset> -->
 
         <!-- ======= SUBMIT ======= -->
         <div class="d-grid">

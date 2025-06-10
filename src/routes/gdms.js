@@ -3,11 +3,11 @@ const router = express.Router();
 const db = require('../config/db');
 
 const categoryMap = {
-  1: 'intuitive',    2: 'dependency', 3: 'intuitive',   4: 'rational',    5: 'dependency',
-  6: 'avoidance',    7: 'rational',   8: 'instant',     9: 'instant',     10: 'dependency',
-  11: 'rational',    12: 'intuitive', 13: 'rational',   14: 'avoidance',  15: 'instant',
-  16: 'intuitive',   17: 'intuitive', 18: 'dependency', 19: 'avoidance',  20: 'instant',
-  21: 'avoidance',   22: 'dependency',23: 'avoidance',  24: 'instant',    25: 'rational'
+  1: 'intuitive', 2: 'dependency', 3: 'intuitive', 4: 'rational', 5: 'dependency',
+  6: 'avoidance', 7: 'rational', 8: 'instant', 9: 'instant', 10: 'dependency',
+  11: 'rational', 12: 'intuitive', 13: 'rational', 14: 'avoidance', 15: 'instant',
+  16: 'intuitive', 17: 'intuitive', 18: 'dependency', 19: 'avoidance', 20: 'instant',
+  21: 'avoidance', 22: 'dependency', 23: 'avoidance', 24: 'instant', 25: 'rational'
 };
 
 // GET – wyświetlenie formularza
@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
 
   for (let i = 1; i <= 25; i++) {
     const q = `q${i}`;
-    const value = parseInt(answers[q], 10);
+    const value = parseInt(answers[q], 10); // Pobranie wartości odpowiedzi
     const category = categoryMap[i];
 
     if (!isNaN(value) && category in totals) {
