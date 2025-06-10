@@ -48,10 +48,10 @@ router.post('/', (req, res) => {
   // 4. Upewnij się, że mamy tablicę completedTasks
   req.session.completedTasks = req.session.completedTasks || [];
 
-  // 5. Sprawdź, czy zadanie nie zostało już ukończone
-  if (req.session.completedTasks.includes('nudging2')) {
-    return res.status(400).send('To zadanie zostało już ukończone.');
-  }
+  // // 5. Sprawdź, czy zadanie nie zostało już ukończone
+  // if (req.session.completedTasks.includes('nudging2')) {
+  //   return res.status(400).send('To zadanie zostało już ukończone.');
+  // }
 
   // 6. Odczytujemy moment startu
   const startTimestamp = req.session.taskStart || 0;

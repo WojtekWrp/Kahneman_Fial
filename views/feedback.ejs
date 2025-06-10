@@ -59,17 +59,11 @@
     </style>
 </head>
 <body>
-    <% if (completedTasks && completedTasks.includes('feedback')) { %>
-        <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
-            <a href="/register">strony rejestracji</a>.
-        </p>
-     <% } 
-     else { %>
     <div class="task-container">
         <h1>To już koniec badania!</h1> 
         <h3>Dziękujemy za udział w badaniu! Zaraz zostaniesz przekierowany do swojego wyniku.
             <br>
-            Zanim to nastąpi, prosimy o ocenienie skali podchwytliwości zadań. Jaką trudność w skali od 1 ( bardzo łatwe) do 10 (bardzo trudne) przysporzyły Ci zadania?
+            Zanim to nastąpi, prosimy o ocenienie skali podchwytliwości zadań. Jaką trudność w skali od 1 (bardzo łatwe) do 10 (bardzo trudne) przysporzyły Ci zadania?
         </h3>
         
         <form id="feedback-form" action="/feedback" method="POST" style="text-align: center;">
@@ -92,25 +86,22 @@
             <button type="submit" class="submit-btn">OK</button>
         </form>
     </div>
-    <% } %>
-</body>
+
     <script>
-    // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
-    window.onpopstate = function () {
-        const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
-        if (userChoice) {
-        // Użytkownik wybrał "OK" → przekierowanie
-        window.location.href = "/register";
-        } else {
-        // Użytkownik wybrał "Anuluj" → zostaje na stronie i zapobiegamy cofnięciu
-        history.pushState(null, null, location.href);
-        }
+        // Nasłuchiwanie zdarzenia cofnięcia w przeglądarce
+        window.onpopstate = function () {
+            const userChoice = confirm("Czy na pewno chcesz opuścić tę stronę?");
+            if (userChoice) {
+                window.location.href = "/register";
+            } else {
+                history.pushState(null, null, location.href);
+            }
         };
-        // Zapobiegaj zapisywaniu tej strony w historii
         history.pushState(null, null, location.href);
         window.addEventListener('popstate', function () {
-        history.pushState(null, null, location.href);
+            history.pushState(null, null, location.href);
         });
     </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

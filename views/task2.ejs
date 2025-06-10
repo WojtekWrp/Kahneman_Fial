@@ -89,11 +89,11 @@
 </head>
 <body>
 
-<% if (completedTasks && completedTasks.includes('task2')) { %>
+<!-- <% if (completedTasks && completedTasks.includes('task2')) { %>
     <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
         <a href="/register" style="color: #e50914; font-weight: bold;">strony rejestracji</a>.
     </p>
-<% } else { %>
+<% } else { %> -->
     <div class="task-container">
         <img src="/movies.png" alt="movies" class="movies-icon">
         <h1 class="mb-4">Anulowanie subskrypcji?</h1>
@@ -113,7 +113,7 @@
             <div class="progress-bar" id="progress-bar"></div>
         </div>
     </div>
-<% } %>
+<!-- <% } %> -->
 
 <script>
     const taskDuration = <%= wylosowanyCzas %> * 1000;

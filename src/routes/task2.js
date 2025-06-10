@@ -38,9 +38,9 @@ router.post('/', async (req, res) => {
 
   req.session.completedTasks = req.session.completedTasks || [];
 
-  if (req.session.completedTasks.includes('task2')) {
-    return res.status(400).send('To zadanie zostało już ukończone.');
-  }
+  // if (req.session.completedTasks.includes('task2')) {
+  //   return res.status(400).send('To zadanie zostało już ukończone.');
+  // }
 
   const startTimestamp = req.session.taskStart || 0;
   const now = Date.now();

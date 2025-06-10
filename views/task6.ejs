@@ -75,12 +75,12 @@
     </style>
 </head>
 <body>
-    <% if (completedTasks && completedTasks.includes('task6')) { %>
+    <!-- <% if (completedTasks && completedTasks.includes('task6')) { %>
         <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
             <a href="/register">strony rejestracji</a>.
         </p>
      <% } 
-     else { %>
+     else { %> -->
     <div class="container">
         <h1>Finalizacja zakupu</h1>
         <form action="/task6" method="POST" id="task6-form">
@@ -113,7 +113,7 @@
         </div>
 
     </div>
-    <% } %>
+    <!-- <% } %> -->
 </body>
     <script>
         const timeoutInput = document.getElementById('timeout');

@@ -52,10 +52,10 @@ router.post('/', (req, res) => {
   // 3. Ensure completedTasks jest tablicą
   req.session.completedTasks = req.session.completedTasks || [];
 
-  // 4. Sprawdzenie, czy zadanie zostało ukończone
-  if (req.session.completedTasks.includes('nudging1')) {
-    return res.status(400).send('To zadanie zostało już ukończone.');
-  }
+  // // 4. Sprawdzenie, czy zadanie zostało ukończone
+  // if (req.session.completedTasks.includes('nudging1')) {
+  //   return res.status(400).send('To zadanie zostało już ukończone.');
+  // }
 
   // 5. Znacznik startu i czas odpowiedzi
   const startTimestamp = req.session.taskStart || 0;

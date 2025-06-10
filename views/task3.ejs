@@ -99,11 +99,11 @@
     </style>
 </head>
 <body>
-<% if (completedTasks && completedTasks.includes('task3')) { %>
+<!-- <% if (completedTasks && completedTasks.includes('task3')) { %>
     <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
         <a href="/register" style="color: #1DB954;">strony rejestracji</a>.
     </p>
-<% } else { %>
+<% } else { %> -->
     <div class="task-container">
         <img src="/headphones.png" alt="headphones" width="100" height="100" class="headphones-icon">
         <h1>Przejdź do płatności</h1>
@@ -131,7 +131,7 @@
             <div class="progress-bar" id="progress-bar"></div>
         </div>
     </div>
-<% } %>
+<!-- <% } %> -->
 <script>
     window.onpageshow = function(event) {
         if (event.persisted) window.location.reload();

@@ -44,9 +44,9 @@ router.post('/', async (req, res) => {
 
   req.session.completedTasks = req.session.completedTasks || [];
 
-  if (req.session.completedTasks.includes('feedback')) {
-    return res.status(400).send('To zadanie zostało już ukończone.');
-  }
+  // if (req.session.completedTasks.includes('feedback')) {
+  //   return res.status(400).send('To zadanie zostało już ukończone.');
+  // }
 
   const sql = `
     INSERT INTO session_mark (id_sesji, ocena)

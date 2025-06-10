@@ -79,11 +79,11 @@
     </style>
 </head>
 <body>
-    <% if (completedTasks && completedTasks.includes('nudging3')) { %>
+    <!-- <% if (completedTasks && completedTasks.includes('nudging3')) { %>
         <p>To zadanie zostało już ukończone. Prosimy nie cofać kart w przeglądarce. Prosimy o powrót do: 
             <a href="/register">strony rejestracji</a>.
         </p>
-    <% } else { %>
+    <% } else { %> -->
         <div class="task-container">
             <img src="/bank.png" alt="shop" width="100" height="100" class="bank-icon">
             <h1 class="mb-4" style="color: #003B71;">Sfinalizuj płatność</h1>
@@ -104,7 +104,7 @@
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
         </div>
-    <% } %>
+    <!-- <% } %> -->
 
     <script>
         const taskDuration = <%= wylosowanyCzas %> * 1000;
